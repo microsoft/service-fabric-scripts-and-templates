@@ -1,0 +1,1 @@
+Create a new directory for each Resource Manager template here.
