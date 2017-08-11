@@ -1,7 +1,10 @@
 #!/bin/bash
 
 #
-# Usage: sudo ./deploy.sh
+# This script installs and sets up the Service Fabric Runtime and Common SDK.
+# It also sets up Azure CLI 2.0
+#
+# Usage: sudo ./SetupServiceFabric.sh
 #
 
 if [ "$EUID" -ne 0 ]; then
@@ -68,22 +71,24 @@ fi
 
 
 #
-# Setup XPlat Service Fabric CLI
+# Setup Azure CLI 2.0
 #
 
-git clone https://github.com/Azure/azure-xplat-cli.git
+uname -m | grep '64'
 
-pushd "azure-xplat-cli"
-npm install
+if [ $? -eq 0 ]; then
+  sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ wheezy main" > /etc/apt/sources.list.d/azure-cli.list'
+  ExitIfError $?  "Error@$LINENO: Failed to add Azure CLI repo to the sources.list"
+else
+  sh -c 'echo "deb https://packages.microsoft.com/repos/azure-cli/ wheezy main" > /etc/apt/sources.list.d/azure-cli.list'
+  ExitIfError $?  "Error@$LINENO: Failed to add Azure CLI repo to the sources.list"
+fi
 
-ExitIfError $?  "Error@$LINENO: Failed to install XPlat Service Fabric CLI"
-
-ln -s $(pwd)/bin/azure /usr/bin/azure
-
-popd
-
-azure --completion >> ~/azure.completion.sh
-echo 'source ~/azure.completion.sh' >> ~/.bash_profile
-source ~/azure.completion.sh
+sudo apt-key adv --keyserver packages.microsoft.com --recv-keys 417A0893
+ExitIfError $?  "Error@$LINENO: Failed to add key for Azure CLI repo"
+sudo apt-get install apt-transport-https
+ExitIfError $?  "Error@$LINENO: Failed to install Azure CLI dependencies."
+sudo apt-get update && sudo apt-get install azure-cli
+ExitIfError $?  "Error@$LINENO: Failed to install Azure CLI."
 
 echo "Successfully completed Service Fabric SDK installation and setup."
