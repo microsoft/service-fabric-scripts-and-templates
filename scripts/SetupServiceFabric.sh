@@ -51,7 +51,7 @@ apt-get update
 
 
 #
-# Install Service Fabric SDK and run the setup script
+# Install Service Fabric SDK.
 #
 
 echo "servicefabric servicefabric/accepted-eula-v1 select true" | debconf-set-selections
@@ -74,6 +74,6 @@ ExitIfError $?  "Error@$LINENO: Failed to install pip for sfctl setup."
 pip install sfctl
 ExitIfError $?  "Error@$LINENO: sfctl installation failed."
 
-export PATH=$PATH:.local/bin/
+export PATH=$PATH:$HOME/.local/bin/
 
 echo "Successfully completed Service Fabric SDK installation and setup."
