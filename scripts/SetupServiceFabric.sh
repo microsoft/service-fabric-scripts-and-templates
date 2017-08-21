@@ -74,21 +74,15 @@ fi
 # Setup Azure CLI 2.0
 #
 
-uname -m | grep '64'
+apt-get install python -f -y
+ExitIfError $?  "Error@$LINENO: Failed to install python for sfctl setup."
 
-if [ $? -eq 0 ]; then
-  sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ wheezy main" > /etc/apt/sources.list.d/azure-cli.list'
-  ExitIfError $?  "Error@$LINENO: Failed to add Azure CLI repo to the sources.list"
-else
-  sh -c 'echo "deb https://packages.microsoft.com/repos/azure-cli/ wheezy main" > /etc/apt/sources.list.d/azure-cli.list'
-  ExitIfError $?  "Error@$LINENO: Failed to add Azure CLI repo to the sources.list"
-fi
+apt-get install python-pip -f -y
+ExitIfError $?  "Error@$LINENO: Failed to install pip for sfctl setup."
 
-sudo apt-key adv --keyserver packages.microsoft.com --recv-keys 417A0893
-ExitIfError $?  "Error@$LINENO: Failed to add key for Azure CLI repo"
-sudo apt-get install apt-transport-https
-ExitIfError $?  "Error@$LINENO: Failed to install Azure CLI dependencies."
-sudo apt-get update && sudo apt-get install azure-cli
-ExitIfError $?  "Error@$LINENO: Failed to install Azure CLI."
+pip install sfctl
+ExitIfError $?  "Error@$LINENO: sfctl installation failed."
+
+export PATH=$PATH:.local/bin/
 
 echo "Successfully completed Service Fabric SDK installation and setup."
