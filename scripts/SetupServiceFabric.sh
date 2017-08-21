@@ -60,15 +60,6 @@ echo "servicefabricsdkcommon servicefabricsdkcommon/accepted-eula-v1 select true
 apt-get install servicefabricsdkcommon -f -y
 ExitIfError $?  "Error@$LINENO: Failed to install Service Fabric SDK"
 
-/opt/microsoft/sdk/servicefabric/common/sdkcommonsetup.sh
-ExitIfError $?  "Error@$LINENO: Service Fabric common SDK setup failed."
-
-export NODE_PATH=$NODE_PATH:$HOME/.node/lib/node_modules
-
-if [ "$EUID" == "0" ]; then
-    export NODE_PATH=$NODE_PATH:/root/.node/lib/node_modules
-fi
-
 
 #
 # Setup Azure CLI 2.0
