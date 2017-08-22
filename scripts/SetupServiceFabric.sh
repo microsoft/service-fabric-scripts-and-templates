@@ -2,7 +2,7 @@
 
 #
 # This script installs and sets up the Service Fabric Runtime and Common SDK.
-# It also sets up Azure CLI 2.0
+# It also sets up Azure Service Fabric CLI
 #
 # Usage: sudo ./SetupServiceFabric.sh
 #
@@ -30,7 +30,7 @@ fi
 # Add the service fabric repo and dependents to the sources list.
 # Also add the corresponding keys.
 #
-sh -c 'echo "deb [arch=amd64] http://apt-mo.trafficmanager.net/repos/servicefabric/ trusty main" > /etc/apt/sources.list.d/servicefabric.list'
+sh -c 'echo "deb [arch=amd64] http://apt-mo.trafficmanager.net/repos/servicefabric/ xenial main" > /etc/apt/sources.list.d/servicefabric.list'
 ExitIfError $?  "Error@$LINENO: Could not add Service Fabric repo to sources."
 
 sh -c 'echo "deb [arch=amd64] https://apt-mo.trafficmanager.net/repos/dotnet-release/ xenial main" > /etc/apt/sources.list.d/dotnetdev.list'
@@ -62,7 +62,7 @@ ExitIfError $?  "Error@$LINENO: Failed to install Service Fabric SDK"
 
 
 #
-# Setup Azure CLI 2.0
+# Setup Azure Service Fabric CLI
 #
 
 apt-get install python -f -y
