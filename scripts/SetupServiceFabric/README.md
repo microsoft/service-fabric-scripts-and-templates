@@ -5,11 +5,10 @@ It also sets up the Service Fabric CLI 'sfctl'.
 
 ## Usage
 Use following command for automated installation of Service Fabric Runtime and Common SDK.
+
 ```bash
-sudo curl -s https://raw.githubusercontent.com/Azure/service-fabric-scripts-and-templates/master/scripts/SetupServiceFabric/SetupServiceFabric.sh | sudo bash
-```
-or you can download this script and run
-```bash
+git clone https://github.com/Azure/service-fabric-scripts-and-templates.git
+cd scripts/SetupServiceFabric
 sudo ./SetupServiceFabric.sh
 ```
 
