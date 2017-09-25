@@ -54,8 +54,8 @@ apt-get update
 # Install Service Fabric SDK.
 #
 
-echo "servicefabric servicefabric/accepted-eula-v1 select true" | debconf-set-selections
-echo "servicefabricsdkcommon servicefabricsdkcommon/accepted-eula-v1 select true" | debconf-set-selections
+echo "servicefabric servicefabric/accepted-eula-ga select true" | debconf-set-selections
+echo "servicefabricsdkcommon servicefabricsdkcommon/accepted-eula-ga select true" | debconf-set-selections
 
 apt-get install servicefabricsdkcommon -f -y
 ExitIfError $?  "Error@$LINENO: Failed to install Service Fabric SDK"
