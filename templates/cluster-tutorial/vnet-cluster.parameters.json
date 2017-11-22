@@ -1,0 +1,81 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vnetName": {
+      "value": "sf-vnet"
+    },
+    "vnetAddressSpace": {
+      "value": "172.16.0.0/20"
+    },
+    "sfSubnetSpace": {
+      "value": "172.16.2.0/23"
+    },
+    "sfSubnetName": {
+      "value": "sf-subnet"
+    },
+    "location":{
+      "value": "southcentralus"
+    },
+    "clusterName": {
+      "value": "mysfcluster123"
+    },
+    "adminUserName": {
+      "value": "adminuser"
+    },
+    "adminPassword": {
+      "value": "Pa$sw00rd!123"
+    },
+    "certificateThumbprint": {
+      "value": ""
+    },
+    "sourceVaultvalue": {
+      "value": ""
+    },
+    "certificateUrlvalue": {
+      "value": ""
+    },
+    "subnetName": {
+      "value": "sf-subnet"
+    },
+    "networkSecurityGroupName": {
+      "value": "sf-vnet-security"
+    },
+    "vmImagePublisher": {
+      "value": "MicrosoftWindowsServer"
+    },
+    "vmImageOffer": {
+      "value": "WindowsServer"
+    },
+    "vmImageSku": {
+      "value": "2016-Datacenter-with-Containers"
+    },
+    "vmImageVersion": {
+      "value": "latest"
+    },
+    "loadBalancedAppPort1": {
+      "value": 80
+    },
+    "loadBalancedAppPort2": {
+      "value": 443
+    },
+    "certificateStorevalue": {
+      "value": "My"
+    },
+    "clusterProtectionLevel": {
+      "value": "EncryptAndSign"
+    },
+    "storageAccountType": {
+      "value": "Standard_LRS"
+    },
+    "supportLogStorageAccountType": {
+      "value": "Standard_LRS"
+    },
+    "applicationDiagnosticsStorageAccountType": {
+      "value": "Standard_LRS"
+    },
+    "nt0InstanceCount": {
+      "value": 5
+    }
+  }
+}

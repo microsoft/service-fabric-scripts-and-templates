@@ -1,0 +1,18 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "apimNetworkSecurityGroupName": {
+        "value": "apim-vnet-security"
+      },
+      "vnetAddressSpace": {
+        "value": "172.16.0.0/20"
+      },
+      "apimSubnetSpace": {
+        "value": "172.16.0.0/27"
+      },
+      "apimSubnetName": {
+        "value": "apim-subnet"
+      }
+    }
+  }
