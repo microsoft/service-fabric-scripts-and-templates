@@ -1,0 +1,66 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "apimInstanceName": {
+            "value": "sfapim"
+        },
+        "apimPublisherEmail": {
+            "value": "user@contoso.com"
+        },
+        "apimSku": {
+            "value": "Developer"
+        },
+        "serviceFabricCertificateName": {
+            "value": "sfclustertutorialgroup320171031144217"
+        },
+        "serviceFabricCertificate": {
+            "value": ""
+        },
+        "certificatePassword": {
+            "value": "q6D7nN%6ck@6"
+        },
+        "serviceFabricCertificateThumbprint": {
+            "value": ""
+        },
+        "url_path": {
+            "value": "/api/values"
+        },
+        "clusterHttpManagementEndpoint": {
+            "value": "https://mysfcluster123.southcentralus.cloudapp.azure.com:19080"
+        },
+        "inbound_policy":{
+            "value": "<policies>\r\n  <inbound>\r\n    <base />\r\n    <set-backend-service backend-id=\"servicefabric\" sf-service-instance-name=\"fabric:/ApiApplication/WebApiService\" sf-resolve-condition=\"@((int)context.Response.StatusCode != 200)\" />\r\n  </inbound>\r\n  <backend>\r\n    <base />\r\n  </backend>\r\n  <outbound>\r\n    <base />\r\n  </outbound>\r\n  <on-error>\r\n    <base />\r\n  </on-error>\r\n</policies>"
+        },
+        "policies_policy_name": {
+            "value": "policy"
+        },
+        "apis_service_fabric_app_name": {
+            "value": "service-fabric-app"
+        },
+        "apim_service_fabric_product_name": {
+            "value": "service-fabric-api-product"
+        },
+        "service_fabric_backend_name": {
+            "value": "servicefabric"
+        },
+        "apis_service_fabric_app_name_operation": {
+            "value": "service-fabric-app-operation"
+        },
+        "vnetName": {
+            "value": "sf-vnet"
+        },
+        "subnetName": {
+            "value": "apim-subnet"
+        },
+        "vnetVersion": {
+            "value": "2017-03-01"
+        },
+        "networkSecurityGroupName": {
+            "value": "apim-vnet-security"
+        },
+        "networkSecurityGroupVersion": {
+            "value": "2017-03-01"
+        }
+    }
+}
