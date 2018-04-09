@@ -33,12 +33,12 @@ fi
 sh -c 'echo "deb [arch=amd64] http://apt-mo.trafficmanager.net/repos/servicefabric/ xenial main" > /etc/apt/sources.list.d/servicefabric.list'
 ExitIfError $?  "Error@$LINENO: Could not add Service Fabric repo to sources."
 
-sh -c 'echo "deb [arch=amd64] https://apt-mo.trafficmanager.net/repos/dotnet-release/ xenial main" > /etc/apt/sources.list.d/dotnetdev.list'
+sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-xenial-prod xenial main" > /etc/apt/sources.list.d/dotnetdev.list'
 ExitIfError $?  "Error@$LINENO: Could not add Dotnet repo to sources."
 
 apt-key adv --keyserver apt-mo.trafficmanager.net --recv-keys 417A0893
 ExitIfError $?  "Error@$LINENO: Failed to add key for Service Fabric repo"
-apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 417A0893
+curl 'https://packages.microsoft.com/keys/microsoft.asc' | gpg --dearmor | apt-key add -a
 ExitIfError $?  "Error@$LINENO: Failed to add key for dotnet repo"
 
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
