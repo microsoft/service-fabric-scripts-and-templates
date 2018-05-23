@@ -72,7 +72,7 @@ Write-Host "Creating init.bat for docker package"
 New-Item -ItemType file $initScriptPath -Value $initScriptContents -Force | Out-Null
 
 $dockerfilePath = Join-Path $DockerPackageOutputDirectoryPath -ChildPath "Dockerfile"
-$dockerfileContents = "FROM microsoft/service-fabric-runservices-windowsservercore:latest
+$dockerfileContents = "FROM microsoft/service-fabric-reliableservices-windowsservercore:latest
 ADD publish/ /
 CMD C:\init.bat"
 
