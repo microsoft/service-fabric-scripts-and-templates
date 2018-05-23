@@ -1,12 +1,17 @@
 param (
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory=$true, ParameterSetName = "Exe")]
+    [Parameter(Mandatory=$true, ParameterSetName = "Dll")]
     [string] $CodePackageDirectoryPath,
 
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory=$true, ParameterSetName = "Exe")]
+    [Parameter(Mandatory=$true, ParameterSetName = "Dll")]
     [string] $DockerPackageOutputDirectoryPath,
 
-    [Parameter(Mandatory=$false)]
-    [string] $ApplicationExeName
+    [Parameter(Mandatory=$false, ParameterSetName = "Exe")]
+    [string] $ApplicationExeName,
+
+    [Parameter(Mandatory=$false, ParameterSetName = "Dll")]
+    [string] $DotnetCoreDllName
 )
 
 if(!(Test-Path -Path $CodePackageDirectoryPath))
@@ -44,23 +49,22 @@ if(Test-Path -Path $ServiceFabricDataInterfacesPath)
     Write-Host "Microsoft.ServiceFabric.Data.Interfaces.dll removed."
 }
 
-Get-ChildItem $DockerPublishPath | Where{$_.Name -Match "System.Fabric.*.dll"} | Remove-Item -Force
+Get-ChildItem $DockerPublishPath | Where-Object{$_.Name -Match "System.Fabric.*.dll"} | Remove-Item -Force
 Write-Host "Removed System.Fabric.*.dll"
 
 $initScriptPath = Join-Path $DockerPublishPath -ChildPath "init.bat"
-$initScriptContents = "setx /M PATH %PATH%;C:\sffabricbin
-set PATH=%PATH%;C:\sffabricbin
-C:\SFFabricBin\vc14_redist.x64.exe -quiet
-C:\SFFabricBin\vcredist_x64.exe -quiet
-"
 
 if ($ApplicationExeName)
 {
-    $initScriptContents = $initScriptContents + $ApplicationExeName + ".exe"
+    $initScriptContents = [System.IO.Path]::GetFileNameWithoutExtension($ApplicationExeName) + ".exe"
+}
+elseif ($DotnetCoreDllName) 
+{
+    $initScriptContents = "dotnet " + [System.IO.Path]::GetFileNameWithoutExtension($DotnetCoreDllName) + ".dll"
 }
 else
 {
-    $warning = "Modify init.bat inside " + $DockerPublishPath + " to include the name of your startup exe."
+    $warning = "Modify init.bat inside " + $DockerPublishPath + " to include the name of your startup executable."
     Write-Warning $warning
 }
 
@@ -68,7 +72,7 @@ Write-Host "Creating init.bat for docker package"
 New-Item -ItemType file $initScriptPath -Value $initScriptContents -Force | Out-Null
 
 $dockerfilePath = Join-Path $DockerPackageOutputDirectoryPath -ChildPath "Dockerfile"
-$dockerfileContents = "FROM microsoft/windowsservercore:latest
+$dockerfileContents = "FROM microsoft/service-fabric-runservices-windowsservercore:latest
 ADD publish/ /
 CMD C:\init.bat"
 
