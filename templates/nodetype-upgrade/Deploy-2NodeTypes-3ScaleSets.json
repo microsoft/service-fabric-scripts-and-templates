@@ -1033,12 +1033,12 @@
                             "backendAddressPool": {
                                 "id": "[variables('lbPoolID2')]"
                             },
-                            "backendPort": "[parameters('nt0fabricTcpGatewayPort')]",
+                            "backendPort": "[parameters('nt2fabricTcpGatewayPort')]",
                             "enableFloatingIP": "false",
                             "frontendIPConfiguration": {
                                 "id": "[variables('lbIPConfig2')]"
                             },
-                            "frontendPort": "[parameters('nt0fabricTcpGatewayPort')]",
+                            "frontendPort": "[parameters('nt2fabricTcpGatewayPort')]",
                             "idleTimeoutInMinutes": "5",
                             "probe": {
                                 "id": "[variables('lbProbeID2')]"
@@ -1052,12 +1052,12 @@
                             "backendAddressPool": {
                                 "id": "[variables('lbPoolID2')]"
                             },
-                            "backendPort": "[parameters('nt0fabricHttpGatewayPort')]",
+                            "backendPort": "[parameters('nt2fabricHttpGatewayPort')]",
                             "enableFloatingIP": "false",
                             "frontendIPConfiguration": {
                                 "id": "[variables('lbIPConfig2')]"
                             },
-                            "frontendPort": "[parameters('nt0fabricHttpGatewayPort')]",
+                            "frontendPort": "[parameters('nt2fabricHttpGatewayPort')]",
                             "idleTimeoutInMinutes": "5",
                             "probe": {
                                 "id": "[variables('lbHttpProbeID2')]"
@@ -1072,7 +1072,7 @@
                         "properties": {
                             "intervalInSeconds": 5,
                             "numberOfProbes": 2,
-                            "port": "[parameters('nt0fabricTcpGatewayPort')]",
+                            "port": "[parameters('nt2fabricTcpGatewayPort')]",
 
                             "protocol": "tcp"
                         }
@@ -1082,7 +1082,7 @@
                         "properties": {
                             "intervalInSeconds": 5,
                             "numberOfProbes": 2,
-                            "port": "[parameters('nt0fabricHttpGatewayPort')]",
+                            "port": "[parameters('nt2fabricHttpGatewayPort')]",
 
                             "protocol": "tcp"
                         }
