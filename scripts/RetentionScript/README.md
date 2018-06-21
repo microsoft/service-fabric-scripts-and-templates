@@ -32,23 +32,24 @@ This script could be used in case of both type of supported storages:
  ```
  
   How to use with File Storage:
-  If the storage is secured with username(in the format Domain\user) and password, then, you only need to provide the username while running the script. Then, you will have to input the password once.
+  If the storage is secured with username(in the format Domain\user) and password, then, you need to provide password as secured string to the input variable "Pass"
   Examples: 
   The below example  will delete backups of  the paritition with partition id "18cf9495-7233-42a0-929d-5ca9c110b861" before "2018-06-18 23.44.03Z".
 ```powershell
- .\RetentionScript.ps1 -DateTimeBefore "2018-06-18 23.44.03Z" -UserName "Domain\brsuser"  -ClusterEndPoint "clustername.centralus.cloupapp.azure.com:19080" -SSLCertificateThumbPrint "Client#Certificate#Thumbpring" -FileSharePath "\\fileshare\sharedfolder" -PartitionId "18cf9495-7233-42a0-929d-5ca9c110b861" 
+$pass = "Passoword" | ConvertTo-SecureString -AsPlainText -Force
+ .\RetentionScript.ps1 -DateTimeBefore "2018-06-18 23.44.03Z" -UserName "Domain\brsuser"  -ClusterEndPoint "clustername.centralus.cloupapp.azure.com:19080" -SSLCertificateThumbPrint "Client#Certificate#Thumbpring" -Pass $pass -FileSharePath "\\fileshare\sharedfolder" -PartitionId "18cf9495-7233-42a0-929d-5ca9c110b861"  
  ```
  
   The below example  will delete backups of  the application with application id "WebReferenceApplication~RestockRequestManager" before "2018-06-18 23.44.03Z".
 ```powershell
- .\RetentionScript.ps1 -DateTimeBefore "2018-06-18 23.44.03Z" -UserName "Domain\brsuser"  -ClusterEndPoint "clustername.centralus.cloupapp.azure.com:19080" -SSLCertificateThumbPrint "Client#Certificate#Thumbpring" -FileSharePath "\\fileshare\sharedfolder" -ApplicationId "WebReferenceApplication~RestockRequestManager"
+ .\RetentionScript.ps1 -DateTimeBefore "2018-06-18 23.44.03Z" -UserName "Domain\brsuser"  -ClusterEndPoint "clustername.centralus.cloupapp.azure.com:19080" -SSLCertificateThumbPrint "Client#Certificate#Thumbpring" -Pass $pass -FileSharePath "\\fileshare\sharedfolder" -ApplicationId "WebReferenceApplication~RestockRequestManager"
  ```
  
   The below example  will delete backups of  the service with service id "WebReferenceApplication~RestockRequestManager" before "2018-06-18 23.44.03Z". 
  ```powershell
- .\RetentionScript.ps1 -DateTimeBefore "2018-06-18 23.44.03Z" -UserName "Domain\brsuser"  -ClusterEndPoint "clustername.centralus.cloupapp.azure.com:19080" -SSLCertificateThumbPrint "Client#Certificate#Thumbpring" -FileSharePath "\\fileshare\sharedfolder" -ServiceId "WebReferenceApplication~RestockRequestManager"
+ .\RetentionScript.ps1 -DateTimeBefore "2018-06-18 23.44.03Z" -UserName "Domain\brsuser"  -ClusterEndPoint "clustername.centralus.cloupapp.azure.com:19080" -SSLCertificateThumbPrint "Client#Certificate#Thumbpring" -Pass $pass -FileSharePath "\\fileshare\sharedfolder" -ServiceId "WebReferenceApplication~RestockRequestManager"
  ```
- 
+
   For public file shares, do not provide any username while running the script
  
   

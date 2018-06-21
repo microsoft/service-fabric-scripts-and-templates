@@ -3,9 +3,6 @@ param (
     [Parameter(Mandatory=$false)]
     [String] $UserName,
 
-    [Parameter(Mandatory=$false)]
-    [SecureString] $Password,
-
     [Parameter(Mandatory=$true)]
     [String] $FileSharePath,
 
@@ -115,7 +112,6 @@ elseif($PartitionId)
 
 if($UserName)
 {
-    $Password = Read-Host -Prompt "Please enter password for the userName: $UserName" -AsSecureString
     $userNameDomainList = $username.Split("\",[StringSplitOptions]'RemoveEmptyEntries')
 
     if($userNameDomainList.Count -eq 2)
@@ -128,7 +124,7 @@ if($UserName)
         $domain = "."
     }
     
-    $userToken = Get-LogonUserToken  -Username $userNameToTry -Domain $domain -Pass $Password
+    $userToken = Get-LogonUserToken  -Username $userNameToTry -Domain $domain -Pass $Global:Password
     $Global:ImpersonatedUser.ImpersonationContext = [System.Security.Principal.WindowsIdentity]::Impersonate($userToken) 
          
     # Close the handle to the token. Voided to mask the Boolean return value. 

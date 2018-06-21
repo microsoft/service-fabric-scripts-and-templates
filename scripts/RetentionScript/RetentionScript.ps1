@@ -21,6 +21,11 @@
  .PARAMETER ConnectionString
     Connection string to the azure storage configured for backup.
 
+ .PARAMETER Pass
+    File share password for the user name $UserName.It must be specified in Secured String
+    Example:
+    $pass ="Password" | ConvertTo-SecureString -AsPlainText -Force
+
  .PARAMETER ContainerName(Optional)
     Container name of storage in which backups are stored.
 
@@ -75,6 +80,9 @@ param (
     
     [Parameter(Mandatory=$false)]
     [String] $ConnectionString,
+    
+    [Parameter(Mandatory=$false)]
+    [SecureString] $Pass,
 
     [Parameter(Mandatory=$false)]
     [String] $ContainerName,
@@ -115,6 +123,11 @@ if($StorageType -eq "FileShare")
   if($UserName)
   {
       $command = $command +  ".\RetentionScriptFileShare.ps1 -UserName `"$UserName`" -FileSharePath `"$FileSharePath`" -DateTimeBefore `"$DateTimeBefore`" -ClusterEndPoint `"$ClusterEndPoint`""
+    if(!$Pass)
+    {
+        $Pass = Read-Host -Prompt "Please enter password for the userName: $UserName" -AsSecureString
+    }
+    $Global:Password = $Pass    
   }
   else {
     $command = $command +  ".\RetentionScriptFileShare.ps1 -FileSharePath `"$FileSharePath`" -DateTimeBefore `"$DateTimeBefore`" -ClusterEndPoint `"$ClusterEndPoint`""
