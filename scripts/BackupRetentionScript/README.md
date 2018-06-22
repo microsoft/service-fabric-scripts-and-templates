@@ -28,7 +28,7 @@ This script support both the storage types supported by Backup Restore service:
  3) Similarly you can also filter the application by providing the ApplicationId. If Application name is "fabric:/WebReferenceApplication" then,
  	  application id is "WebReferenceApplication":
 ```powershell
- .\RetentionScript.ps1 -ContainerName "brstorage"-DateTimeBefore "2018-06-18 23.44.03Z" -StorageAccountName "storageaccountname" -StorageAccountName "storgeAccountName" -ClusterEndPoint "clustername.centralus.cloupapp.azure.com:19080" -ClientCertificateThumbprint "Client#Certificate#Thumbpring" -ApplicationId "WebReferenceApplication~RestockRequestManager"
+ .\RetentionScript.ps1 -ContainerName "brstorage"-DateTimeBefore "2018-06-18 23.44.03Z" -StorageAccountName "storageaccountname" -StorageAccountName "storgeAccountName" -ClusterEndPoint "clustername.centralus.cloupapp.azure.com:19080" -ClientCertificateThumbprint "Client#Certificate#Thumbpring" -ApplicationId "WebReferenceApplication"
  ```
  4) Filtering for parition with partitionId "18cf9495-7233-42a0-929d-5ca9c110b861"
 ```powershell
@@ -45,7 +45,7 @@ $pass = "Passoword" | ConvertTo-SecureString -AsPlainText -Force
  .\RetentionScript.ps1 -DateTimeBefore "2018-06-18 23.44.03Z" -UserName "Domain\brsuser"  -ClusterEndPoint "clustername.centralus.cloupapp.azure.com:19080" -ClientCertificateThumbprint "Client#Certificate#Thumbpring" -Pass $pass -FileSharePath "\\fileshare\sharedfolder" -PartitionId "18cf9495-7233-42a0-929d-5ca9c110b861"  
  ```
  
-  The below example  will delete backups of  the application with application id "WebReferenceApplication~RestockRequestManager" before "2018-06-18 23.44.03Z".
+  The below example  will delete backups of  the application with application id "WebReferenceApplication" before "2018-06-18 23.44.03Z".
 ```powershell
  .\RetentionScript.ps1 -DateTimeBefore "2018-06-18 23.44.03Z" -UserName "Domain\brsuser"  -ClusterEndPoint "clustername.centralus.cloupapp.azure.com:19080" -ClientCertificateThumbprint "Client#Certificate#Thumbpring" -Pass $pass -FileSharePath "\\fileshare\sharedfolder" -ApplicationId "WebReferenceApplication"
  ```
