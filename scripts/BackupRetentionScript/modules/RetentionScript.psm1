@@ -2,8 +2,8 @@
  .SYNOPSIS
     This powersehll module helps delete older backups from Azure storage or file share which were taken using the Service Fabric Backup Restore service.
 
- .PARAMETER UserName
-    UserName associated with file share.
+ .PARAMETER FileShareUserName
+    FileShareUserName associated with file share.
 
  .PARAMETER FileSharePath
     The file share path of the storage configured for backup.
@@ -22,7 +22,7 @@
     Connection string to the azure storage configured for backup.
 
  .PARAMETER Password
-    File share password for the user name $UserName.It must be specified in Secured String
+    File share password for the user name $FileShareUserName.It must be specified in Secured String
     Example:
     $pass ="Password" | ConvertTo-SecureString -AsPlainText -Force
     
@@ -69,7 +69,7 @@ Function Start-RetentionScript
 [CmdletBinding(PositionalBinding = $false)]
 param (
     [Parameter(Mandatory=$false)]
-    [String] $UserName,
+    [String] $FileShareUserName,
 
     [Parameter(Mandatory=$false)]
     [String] $FileSharePath,
@@ -122,15 +122,16 @@ if($StorageType -eq "FileShare")
     $FileSharePath = Read-Host -Prompt "Please enter the FileSharePath"
   }
 
-  if($UserName)
+  if($FileShareUserName)
   {
-      $command = $command +  "Start-RetentionScriptFileShare -UserName `"$UserName`" -FileSharePath `"$FileSharePath`" -DateTimeBefore `"$DateTimeBefore`" -ClusterEndPoint `"$ClusterEndPoint`""
+      $command = $command +  "Start-RetentionScriptFileShare -UserName `"$FileShareUserName`" -FileSharePath `"$FileSharePath`" -DateTimeBefore `"$DateTimeBefore`" -ClusterEndPoint `"$ClusterEndPoint`""
       if(!$Password)
       {
-          $Password = Read-Host -Prompt "Please enter password for the userName: $UserName" -AsSecureString
+          $Password = Read-Host -Prompt "Please enter password for the userName: $FileShareUserName" -AsSecureString
       }
-      $Global:Pass = $Password    
-  }
+      $Global:Pass = $Password
+    
+    }
   else {
     $command = $command +  "Start-RetentionScriptFileShare -FileSharePath `"$FileSharePath`" -DateTimeBefore `"$DateTimeBefore`" -ClusterEndPoint `"$ClusterEndPoint`""
   }

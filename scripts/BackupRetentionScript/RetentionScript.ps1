@@ -2,8 +2,8 @@
  .SYNOPSIS
     This powersehll script helps delete older backups from Azure storage or file share which were taken using the Service Fabric Backup Restore service.
 
- .PARAMETER UserName
-    UserName associated with file share.
+ .PARAMETER FileShareUserName
+    FileShareUserName associated with file share.
 
  .PARAMETER FileSharePath
     The file share path of the storage configured for backup.
@@ -22,7 +22,7 @@
     Connection string to the azure storage configured for backup.
 
  .PARAMETER Password
-    File share password for the user name $UserName.It must be specified in Secure String
+    File share password for the user name $FileShareUserName.It must be specified in Secure String
     Example:
     $Password ="Password" | ConvertTo-SecureString -AsPlainText -Force
 
@@ -67,7 +67,7 @@
 [CmdletBinding(PositionalBinding = $false)]
 param (
     [Parameter(Mandatory=$false)]
-    [String] $UserName,
+    [String] $FileShareUserName,
 
     [Parameter(Mandatory=$false)]
     [String] $FileSharePath,
@@ -120,12 +120,12 @@ if($StorageType -eq "FileShare")
     $FileSharePath = Read-Host -Prompt "Please enter the FileShare path"
   }
 
-  if($UserName)
+  if($FileShareUserName)
   {
-      $command = $command +  ".\RetentionScriptFileShare.ps1 -UserName `"$UserName`" -FileSharePath `"$FileSharePath`" -DateTimeBefore `"$DateTimeBefore`" -ClusterEndPoint `"$ClusterEndPoint`""
+      $command = $command +  ".\RetentionScriptFileShare.ps1 -UserName `"$FileShareUserName`" -FileSharePath `"$FileSharePath`" -DateTimeBefore `"$DateTimeBefore`" -ClusterEndPoint `"$ClusterEndPoint`""
     if(!$Password)
     {
-        $Password = Read-Host -Prompt "Please enter password for the userName: $UserName" -AsSecureString
+        $Password = Read-Host -Prompt "Please enter password for the userName: $FileShareUserName" -AsSecureString
     }
     $Global:Pass = $Password
   }

@@ -1,6 +1,8 @@
 
 # About the scripts:
-These module are used to cleanup the storage configured for BRS service in service fabric. It allows you to delete data older than specific date time.
+ Service Fabric Backup Restore Service (https://docs.microsoft.com/en-us/azure/service-fabric/service-fabric-backuprestoreservice-quickstart-azurecluster),
+  currently in preview, allows you to take periodic backups of your Reliable stateful service and Reliable Actors. Depending on the frequency of your backup interval, backups can really grow fast. 
+ While we work on providing retention support integrated with the service, this script would help you manage your storage till that time. It allows you to delete backups older than a specified time.
 
 ## Usage
 Import all the modules, and the use of these modules is same as of RetentionScript.ps1.
