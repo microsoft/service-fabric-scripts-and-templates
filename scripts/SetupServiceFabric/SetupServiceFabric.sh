@@ -45,6 +45,12 @@ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
 ExitIfError $?  "Error@$LINENO: Failed to add key for docker repo"
 
 add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+
+apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 0x219BD9C9
+ExitIfError $?  "Error@$LINENO: Failed to add key for zulu repo"
+
+apt-add-repository "deb http://repos.azul.com/azure-only/zulu/apt stable main"
+
 ExitIfError $?  "Error@$LINENO: Failed to add Docker repo to sources."
 
 apt-get update
