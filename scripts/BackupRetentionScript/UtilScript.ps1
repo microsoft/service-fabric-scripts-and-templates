@@ -64,12 +64,12 @@ Function Get-FinalDateTimeBefore
     $dateTimeBeforeObject = [DateTime]::ParseExact($DateTimeBefore,"yyyy-MM-dd HH.mm.ssZ",[System.Globalization.DateTimeFormatInfo]::InvariantInfo,[System.Globalization.DateTimeStyles]::None)
     $finalDateTimeObject = $dateTimeBeforeObject
     $dateTimeBeforeString = $dateTimeBeforeObject.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ") 
-    $url = "http://$ClusterEndpoint/Partitions/$Partitionid/$/GetBackups?api-version=6.2-preview&EndDateTimeFilter=$dateTimeBeforeString"
+    $url = "http://$ClusterEndpoint/Partitions/$Partitionid/$/GetBackups?api-version=6.4&EndDateTimeFilter=$dateTimeBeforeString"
     $backupEnumerations = $null
     try {
         if($ClientCertificateThumbprint)
         {
-            $url = "https://$ClusterEndpoint/Partitions/$Partitionid/$/GetBackups?api-version=6.2-preview&EndDateTimeFilter=$dateTimeBeforeString"
+            $url = "https://$ClusterEndpoint/Partitions/$Partitionid/$/GetBackups?api-version=6.4&EndDateTimeFilter=$dateTimeBeforeString"
             $pagedBackupEnumeration = Invoke-RestMethod -Uri $url  -CertificateThumbprint $ClientCertificateThumbprint
         }
         else {  
@@ -154,10 +154,10 @@ Function Get-PartitionIdList
         {
             if($ClientCertificateThumbprint)
             {
-                $partitionInfoList = Invoke-RestMethod -Uri "https://$ClusterEndpoint/Services/$serviceId/$/GetPartitions?api-version=6.2&ContinuationToken=$continuationToken"  -CertificateThumbprint $ClientCertificateThumbprint
+                $partitionInfoList = Invoke-RestMethod -Uri "https://$ClusterEndpoint/Services/$serviceId/$/GetPartitions?api-version=6.4&ContinuationToken=$continuationToken"  -CertificateThumbprint $ClientCertificateThumbprint
             }
             else {  
-                $partitionInfoList = Invoke-RestMethod -Uri "http://$ClusterEndpoint/Services/$serviceId/$/GetPartitions?api-version=6.2&ContinuationToken=$continuationToken" 
+                $partitionInfoList = Invoke-RestMethod -Uri "http://$ClusterEndpoint/Services/$serviceId/$/GetPartitions?api-version=6.4&ContinuationToken=$continuationToken" 
             }
             foreach($partitionInfo in $partitionInfoList.Items)
             {
@@ -186,10 +186,10 @@ Function Get-ServiceIdList
     {
         if($ClientCertificateThumbprint)
         {
-            $serviceInfoList = Invoke-RestMethod -Uri "https://$ClusterEndpoint/Applications/$ApplicationId/$/GetServices?api-version=6.2&ContinuationToken=$continuationToken" -CertificateThumbprint $ClientCertificateThumbprint
+            $serviceInfoList = Invoke-RestMethod -Uri "https://$ClusterEndpoint/Applications/$ApplicationId/$/GetServices?api-version=6.4&ContinuationToken=$continuationToken" -CertificateThumbprint $ClientCertificateThumbprint
         }
         else {  
-            $serviceInfoList = Invoke-RestMethod -Uri "http://$ClusterEndpoint/Applications/$ApplicationId/$/GetServices?api-version=6.2&ContinuationToken=$continuationToken"
+            $serviceInfoList = Invoke-RestMethod -Uri "http://$ClusterEndpoint/Applications/$ApplicationId/$/GetServices?api-version=6.4&ContinuationToken=$continuationToken"
         }
         foreach($serviceInfo in $serviceInfoList.Items)
         {
@@ -215,13 +215,13 @@ Function Start-BackupDataCorruptionTest
     $dateTimeBeforeObject = [DateTime]::ParseExact($DateTimeBefore,"yyyy-MM-dd HH.mm.ssZ",[System.Globalization.DateTimeFormatInfo]::InvariantInfo,[System.Globalization.DateTimeStyles]::None)    
     $dateTimeBeforeString = $dateTimeBeforeObject.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ") 
     # DateTime Improvement to be done here.
-    $url = "http://$ClusterEndpoint/Partitions/$Partitionid/$/GetBackups?api-version=6.2-preview&EndDateTimeFilter=$dateTimeBeforeString"
+    $url = "http://$ClusterEndpoint/Partitions/$Partitionid/$/GetBackups?api-version=6.4&EndDateTimeFilter=$dateTimeBeforeString"
     
     $backupEnumerations = $null
     try {
         if($ClientCertificateThumbprint)
         {
-            $url = "https://$ClusterEndpoint/Partitions/$Partitionid/$/GetBackups?api-version=6.2-preview&EndDateTimeFilter=$dateTimeBeforeString"
+            $url = "https://$ClusterEndpoint/Partitions/$Partitionid/$/GetBackups?api-version=6.4&EndDateTimeFilter=$dateTimeBeforeString"
             $pagedBackupEnumeration = Invoke-RestMethod -Uri $url -CertificateThumbprint  $ClientCertificateThumbprint
         }
         else {

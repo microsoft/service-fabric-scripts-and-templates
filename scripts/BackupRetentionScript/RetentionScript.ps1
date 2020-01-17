@@ -139,7 +139,7 @@ elseif($StorageType -eq "AzureBlob")
     {
         if($ContainerName)
         {
-            $command = $command + ".\RetentionScriptAzureBlobStore.ps1 -ConnectionString `"$ConnectionString`" -DateTimeBefore `"$DateTimeBefore`" -ClusterEndPoint `"$ClusterEndPoint`""
+            $command = $command + ".\RetentionScriptAzureBlobStore.ps1 -ConnectionString `"$ConnectionString`" -DateTimeBefore `"$DateTimeBefore`" -ClusterEndPoint `"$ClusterEndPoint`" -ContainerName `"$ContainerName`""
         }
         else {
             $command = $command + ".\RetentionScriptAzureBlobStore.ps1 -ConnectionString `"$ConnectionString`" -DateTimeBefore `"$DateTimeBefore`" -ClusterEndPoint `"$ClusterEndPoint`""
