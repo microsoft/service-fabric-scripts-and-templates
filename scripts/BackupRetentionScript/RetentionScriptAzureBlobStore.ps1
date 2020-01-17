@@ -75,7 +75,7 @@ else
 
 $containerNameList = New-Object System.Collections.ArrayList
 
-if(!$ContainerName.IsPresent)
+if($ContainerName)
 {
     $containers = Get-AzureStorageContainer -Context $contextForStorageAccount
     foreach($container in $containers)
