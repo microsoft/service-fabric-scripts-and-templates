@@ -47,10 +47,6 @@
             "type": "string",
             "defaultValue": "10.0.0.0/24"
         },
-        "subnet1Name": {
-            "type": "string",
-            "defaultValue": "Subnet-11"
-        },      
         "computeLocation": {
             "type": "string"
         },
@@ -253,7 +249,6 @@
         "publicIPApiVersion": "2019-04-01",
         "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',parameters('virtualNetworkName'))]",
         "subnet0Ref": "[concat(variables('vnetID'),'/subnets/',parameters('subnet0Name'))]",
-        "subnet1Ref": "[concat(variables('vnetID'),'/subnets/',parameters('subnet1Name'))]",
         "lbID0": "[resourceId('Microsoft.Network/loadBalancers', concat('LB','-', parameters('clusterName'),'-',parameters('vmNodeType0Name')))]",
         "lbIPConfig0": "[concat(variables('lbID0'),'/frontendIPConfigurations/LoadBalancerIPConfig')]",
         "lbPoolID0": "[concat(variables('lbID0'),'/backendAddressPools/LoadBalancerBEAddressPool')]",
@@ -268,9 +263,7 @@
             "[concat(variables('vmStorageAccountName0'), '2')]",
             "[concat(variables('vmStorageAccountName0'), '3')]",
             "[concat(variables('vmStorageAccountName0'), '4')]"
-        ],
-                
-        "vmStorageAccountName1": "[toLower(concat(uniqueString(resourceGroup().id), '1', '1' ))]"   
+        ]
     },
     "resources": [
         {
@@ -600,8 +593,7 @@
                 "resourceType": "Service Fabric",
                 "clusterName": "[parameters('clusterName')]"
             }
-        },
-        
+        },        
         {
             "apiVersion": "[variables('storageApiVersion')]",
             "type": "Microsoft.Storage/storageAccounts",

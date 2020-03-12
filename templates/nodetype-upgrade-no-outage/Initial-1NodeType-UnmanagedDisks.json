@@ -46,7 +46,7 @@
         "subnet0Prefix": {
             "type": "string",
             "defaultValue": "10.0.0.0/24"
-        },  
+        },
         "computeLocation": {
             "type": "string"
         },
@@ -238,7 +238,7 @@
         "lbPoolID0": "[concat(variables('lbID0'),'/backendAddressPools/LoadBalancerBEAddressPool')]",
         "lbProbeID0": "[concat(variables('lbID0'),'/probes/FabricGatewayProbe')]",
         "lbHttpProbeID0": "[concat(variables('lbID0'),'/probes/FabricHttpGatewayProbe')]",
-        "lbNatPoolID0": "[concat(variables('lbID0'),'/inboundNatPools/LoadBalancerBEAddressNatPool0')]",        
+        "lbNatPoolID0": "[concat(variables('lbID0'),'/inboundNatPools/LoadBalancerBEAddressNatPool0')]",
         "vmStorageAccountName0": "[toLower(concat(uniqueString(resourceGroup().id), '1', '0' ))]",
         "uniqueStringArray0": [
             "[concat(variables('vmStorageAccountName0'), '0')]",
@@ -568,7 +568,7 @@
         {
             "apiVersion": "[variables('storageApiVersion')]",
             "type": "Microsoft.Storage/storageAccounts",
-            "name": "[parameters('vmStorageAccountContainerName')]",
+            "name": "[variables('uniqueStringArray0')[copyIndex()]]",
             "location": "[parameters('computeLocation')]",
             "dependsOn": [],
             "properties": {},
