@@ -605,7 +605,9 @@
                 "singlePlacementGroup": "true",
                 "overprovision": "[parameters('overProvision')]",
                 "upgradePolicy": {
-                    "mode": "Automatic"
+                    "automaticOSUpgradePolicy": {
+                        "enableAutomaticOSUpgrade":  true
+                    }
                 },
                 "virtualMachineProfile": {
                     "extensionProfile": {
