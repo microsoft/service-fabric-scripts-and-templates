@@ -9,12 +9,12 @@ The initial state of the example test cluster consists of one node type of Silve
 Login-AzAccount -SubscriptionId "<subscription ID>"
 
 # Assign deployment variables
-$resourceGroupName="sftestupgradegroup"
-$certOutputFolder="c:\certificates"
-$certPassword="Password!1" | ConvertTo-SecureString -AsPlainText -Force
-$certSubjectName="sftestupgrade.southcentralus.cloudapp.azure.com"
-$templateFilePath="C:\Initial-1NodeType-UnmanagedDisks.json"
-$parameterFilePath="C:\Initial-1NodeType-UnmanagedDisks.parameters.json"
+$resourceGroupName = "sftestupgradegroup"
+$certOutputFolder = "c:\certificates"
+$certPassword = "Password!1" | ConvertTo-SecureString -AsPlainText -Force
+$certSubjectName = "sftestupgrade.southcentralus.cloudapp.azure.com"
+$templateFilePath = "C:\Initial-1NodeType-UnmanagedDisks.json"
+$parameterFilePath = "C:\Initial-1NodeType-UnmanagedDisks.parameters.json"
 
 # Deploy the initial test cluster
 New-AzServiceFabricCluster `
@@ -27,7 +27,7 @@ New-AzServiceFabricCluster `
 
 # Import the local .pfx file to your certificate store
 cd c:\certificates
-$certPfx=".\sftestupgradegroup20200312121003.pfx"
+$certPfx = ".\sftestupgradegroup20200312121003.pfx"
 
 Import-PfxCertificate `
      -FilePath $certPfx `
@@ -35,8 +35,8 @@ Import-PfxCertificate `
      -Password (ConvertTo-SecureString Password!1 -AsPlainText -Force)
 
 # Connect to the cluster and check health
-$clusterName="sftestupgrade.southcentralus.cloudapp.azure.com:19000"
-$thumb="BB796AA33BD9767E7DA27FE5182CF8FDEE714A70"
+$clusterName = "sftestupgrade.southcentralus.cloudapp.azure.com:19000"
+$thumb = "BB796AA33BD9767E7DA27FE5182CF8FDEE714A70"
 
 Connect-ServiceFabricCluster `
     -ConnectionEndpoint $clusterName `
@@ -51,13 +51,13 @@ Connect-ServiceFabricCluster `
 Get-ServiceFabricClusterHealth
 
 # Find your certificate Key Vault references (in Azure portal)
-$certUrlValue="https://sftestupgradegroup.vault.azure.net/secrets/sftestupgradegroup20200309235308/dac0e7b7f9d4414984ccaa72bfb2ea39"
-$thumb="BB796AA33BD9767E7DA27FE5182CF8FDEE714A70"
-$sourceVaultValue="/subscriptions/########-####-####-####-############/resourceGroups/sftestupgradegroup/providers/Microsoft.KeyVault/vaults/sftestupgradegroup"
+$certUrlValue = "https://sftestupgradegroup.vault.azure.net/secrets/sftestupgradegroup20200309235308/dac0e7b7f9d4414984ccaa72bfb2ea39"
+$thumb = "BB796AA33BD9767E7DA27FE5182CF8FDEE714A70"
+$sourceVaultValue = "/subscriptions/########-####-####-####-############/resourceGroups/sftestupgradegroup/providers/Microsoft.KeyVault/vaults/sftestupgradegroup"
 
 # Deploy the updated template with new scale set (upgraded to use managed disks)
-$templateFilePath="C:\Upgrade-1NodeType-2ScaleSets-ManagedDisks.json"
-$parameterFilePath="C:\Upgrade-1NodeType-2ScaleSets-ManagedDisks.parameters.json"
+$templateFilePath = "C:\Upgrade-1NodeType-2ScaleSets-ManagedDisks.json"
+$parameterFilePath = "C:\Upgrade-1NodeType-2ScaleSets-ManagedDisks.parameters.json"
 
 New-AzResourceGroupDeployment `
     -ResourceGroupName $resourceGroupName `
@@ -78,7 +78,7 @@ foreach($name in $nodeNames){
 }
 
 # When disabling operation is complete, remove the original scale set
-$scaleSetName="NTvm1"
+$scaleSetName = "NTvm1"
 
 Remove-AzVmss `
     -ResourceGroupName $resourceGroupName `
