@@ -29,10 +29,10 @@
     "certificateThumbprint": {
       "value": ""
     },
-    "sourceVaultvalue": {
+    "sourceVaultValue": {
       "value": ""
     },
-    "certificateUrlvalue": {
+    "certificateUrlValue": {
       "value": ""
     },
     "subnetName": {
@@ -59,7 +59,7 @@
     "loadBalancedAppPort2": {
       "value": 443
     },
-    "certificateStorevalue": {
+    "certificateStoreValue": {
       "value": "My"
     },
     "clusterProtectionLevel": {
