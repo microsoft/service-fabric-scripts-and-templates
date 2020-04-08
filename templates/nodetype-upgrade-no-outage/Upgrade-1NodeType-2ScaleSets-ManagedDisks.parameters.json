@@ -1,0 +1,129 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "clusterLocation": {
+            "value": "southcentralus"
+        },
+        "clusterName": {
+            "value": "sftestupgrade"
+        },
+        "nt0applicationStartPort": {
+            "value": 20000
+        },
+        "nt0applicationEndPort": {
+            "value": 30000
+        },
+        "nt0ephemeralStartPort": {
+            "value": 49152
+        },
+        "nt0ephemeralEndPort": {
+            "value": 65534
+        },
+        "nt0fabricTcpGatewayPort": {
+            "value": 19000
+        },
+        "nt0fabricHttpGatewayPort": {
+            "value": 19080
+        },
+        "subnet0Name": {
+            "value": "Subnet-01"
+        },
+        "subnet0Prefix": {
+            "value": "10.0.0.0/24"
+        },   
+        "computeLocation": {
+            "value": "southcentralus"
+        },
+        "publicIPAddressName": {
+            "value": "PublicIP-VM"
+        },
+        "publicIPAddressType": {
+            "value": "Dynamic"
+        },
+        "vmStorageAccountContainerName": {
+            "value": "vhds"
+        },
+        "adminUserName": {
+            "value": "testadm"
+        },
+        "adminPassword": {
+            "value": "Password#1234"
+        },
+        "virtualNetworkName": {
+            "value": "VNet"
+        },
+        "addressPrefix": {
+            "value": "10.0.0.0/16"
+        },
+        "dnsName": {
+            "value": "sftestupgrade.southcentralus.cloudapp.azure.com"
+        },
+        "nicName": {
+            "value": "NIC"
+        },
+        "lbName": {
+            "value": "LoadBalancer"
+        },
+        "lbIPName": {
+            "value": "PublicIP-LB-FE"
+        },
+        "overProvision": {
+            "value": "false"
+        },
+        "vmImagePublisher": {
+            "value": "MicrosoftWindowsServer"
+        },
+        "vmImageOffer": {
+            "value": "WindowsServer"
+        },
+        "vmImageSku": {
+            "value": "2016-Datacenter-with-Containers"
+        },
+        "vmImageVersion": {
+            "value": "latest"
+        },
+        "clusterProtectionLevel": {
+            "value": "EncryptAndSign"
+        },
+        "certificateStoreValue": {
+            "value": "My"
+        },
+        "certificateThumbprint": {
+            "value": ""
+        },
+        "sourceVaultValue": {
+            "value": ""
+        },
+        "certificateUrlValue": {
+            "value": ""
+        },
+        "storageAccountType": {
+            "value": "Standard_LRS"
+        },
+        "supportLogStorageAccountType": {
+            "value": "Standard_LRS"
+        },
+        "applicationDiagnosticsStorageAccountType": {
+            "value": "Standard_LRS"
+        },
+        "vmNodeType0Name": {
+            "value": "NTvm1"
+        },
+        "nt0InstanceCount": {
+            "value": 5
+        },
+        "vmNodeType0Size": {
+            "value": "Standard_D2_v2"
+        },
+        "vmNodeType1Name": {
+            "value": "NTvm2"
+        },
+        "nt1InstanceCount": {
+            "value": 5
+        },
+        "vmNodeType1Size": {
+            "value": "Standard_D2_v2"
+        }
+    }
+}
