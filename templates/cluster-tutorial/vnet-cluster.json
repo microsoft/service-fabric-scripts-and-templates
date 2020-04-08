@@ -2,10 +2,6 @@
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "vnetName": {
-      "defaultValue": "sf-vnet",
-      "type": "string"
-    },
     "vnetAddressSpace": {
       "defaultValue": "172.16.0.0/20",
       "type": "string"
