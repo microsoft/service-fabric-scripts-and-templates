@@ -21,7 +21,7 @@ ExitIfError()
 }
 
 Distribution=`lsb_release -cs`
-if [ "xenial" != "$Distribution" ]; then
+if [ "bionic" != "$Distribution" ]; then
     echo "Service Fabric is not supported on $Distribution"
     exit -1
 fi
@@ -30,10 +30,7 @@ fi
 # Add the service fabric repo and dependents to the sources list.
 # Also add the corresponding keys.
 #
-sh -c 'echo "deb [arch=amd64] http://apt-mo.trafficmanager.net/repos/servicefabric/ xenial main" > /etc/apt/sources.list.d/servicefabric.list'
-ExitIfError $?  "Error@$LINENO: Could not add Service Fabric repo to sources."
-
-sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-xenial-prod xenial main" > /etc/apt/sources.list.d/dotnetdev.list'
+sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-bionic-prod bionic main" > /etc/apt/sources.list.d/dotnetdev.list'
 ExitIfError $?  "Error@$LINENO: Could not add Dotnet repo to sources."
 
 apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 417A0893
