@@ -21,37 +21,31 @@ ExitIfError()
 }
 
 Distribution=`lsb_release -cs`
-if [ "xenial" != "$Distribution" ]; then
+if [[ "xenial" != "$Distribution" && "bionic" != "$Distribution" ]]; then
     echo "Service Fabric is not supported on $Distribution"
     exit -1
 fi
 
 #
-# Add the service fabric repo and dependents to the sources list.
-# Also add the corresponding keys.
+# Install all packages
 #
-sh -c 'echo "deb [arch=amd64] http://apt-mo.trafficmanager.net/repos/servicefabric/ xenial main" > /etc/apt/sources.list.d/servicefabric.list'
-ExitIfError $?  "Error@$LINENO: Could not add Service Fabric repo to sources."
+MSPackage="https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb"
+wget -q $MSPackage
+dpkg -i packages-microsoft-prod.deb
+ExitIfError $?  "Error@$LINENO: Failed to add package $MSPackage"
 
-sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-xenial-prod xenial main" > /etc/apt/sources.list.d/dotnetdev.list'
-ExitIfError $?  "Error@$LINENO: Could not add Dotnet repo to sources."
-
-apt-key adv --keyserver apt-mo.trafficmanager.net --recv-keys 417A0893
-ExitIfError $?  "Error@$LINENO: Failed to add key for Service Fabric repo"
-curl 'https://packages.microsoft.com/keys/microsoft.asc' | gpg --dearmor | apt-key add -a
-ExitIfError $?  "Error@$LINENO: Failed to add key for dotnet repo"
+curl -fsSL https://packages.microsoft.com/keys/msopentech.asc | apt-key add -
+ExitIfError $?  "Error@$LINENO: Failed to add MS GPG key"
 
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
-ExitIfError $?  "Error@$LINENO: Failed to add key for docker repo"
+ExitIfError $?  "Error@$LINENO: Failed to add Docker GPG key"
 
 add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+ExitIfError $?  "Error@$LINENO: Failed to setup docker repository"
 
-apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 0x219BD9C9
-ExitIfError $?  "Error@$LINENO: Failed to add key for zulu repo"
-
+apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 0xB1998361219BD9C9
 apt-add-repository "deb http://repos.azul.com/azure-only/zulu/apt stable main"
-
-ExitIfError $?  "Error@$LINENO: Failed to add Docker repo to sources."
+ExitIfError $?  "Error@$LINENO: Failed to add key for zulu repo"
 
 apt-get update
 
