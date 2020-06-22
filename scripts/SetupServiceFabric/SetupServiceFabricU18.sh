@@ -30,6 +30,7 @@ fi
 # Add the service fabric repo and dependents to the sources list.
 # Also add the corresponding keys.
 #
+
 sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-bionic-prod bionic main" > /etc/apt/sources.list.d/dotnetdev.list'
 ExitIfError $?  "Error@$LINENO: Could not add Dotnet repo to sources."
 
@@ -50,22 +51,29 @@ apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 0x219BD9C9
 ExitIfError $?  "Error@$LINENO: Failed to add key for zulu repo"
 
 apt-add-repository "deb http://repos.azul.com/azure-only/zulu/apt stable main"
-
 ExitIfError $?  "Error@$LINENO: Failed to add Docker repo to sources."
 
 apt-get update
 
 
 #
-# Install Service Fabric SDK.
+# Install Service Fabric and SDK.
 #
 
 echo "servicefabric servicefabric/accepted-eula-ga select true" | debconf-set-selections
 echo "servicefabricsdkcommon servicefabricsdkcommon/accepted-eula-ga select true" | debconf-set-selections
 
-apt-get install servicefabricsdkcommon -f -y
-ExitIfError $?  "Error@$LINENO: Failed to install Service Fabric SDK"
+wget -q https://packages.microsoft.com/repos/microsoft-ubuntu-bionic-prod/pool/main/s/servicefabric/servicefabric_7.1.418.1804.deb
+ExitIfError $?  "Error@$LINENO: Failed to download Service Fabric"
 
+dpkg -i servicefabric_7.1.418.1804.deb
+ExitIfError $?  "Error@$LINENO: Failed to install Service Fabric"
+
+wget -q https://packages.microsoft.com/repos/microsoft-ubuntu-bionic-prod/pool/main/s/servicefabricsdkcommon/servicefabric_sdkcommon_1.4.2.deb
+ExitIfError $?  "Error@$LINENO: Failed to download Service Fabric SDK"
+
+dpkg -i servicefabric_sdkcommon_1.4.2.deb
+ExitIfError $?  "Error@$LINENO: Failed to install Service Fabric SDK"
 
 #
 # Setup Azure Service Fabric CLI
