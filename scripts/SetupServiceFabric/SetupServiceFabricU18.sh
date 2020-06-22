@@ -63,17 +63,8 @@ apt-get update
 echo "servicefabric servicefabric/accepted-eula-ga select true" | debconf-set-selections
 echo "servicefabricsdkcommon servicefabricsdkcommon/accepted-eula-ga select true" | debconf-set-selections
 
-wget -q https://packages.microsoft.com/repos/microsoft-ubuntu-bionic-prod/pool/main/s/servicefabric/servicefabric_7.1.418.1804.deb
-ExitIfError $?  "Error@$LINENO: Failed to download Service Fabric"
-
-dpkg -i servicefabric_7.1.418.1804.deb
-ExitIfError $?  "Error@$LINENO: Failed to install Service Fabric"
-
-wget -q https://packages.microsoft.com/repos/microsoft-ubuntu-bionic-prod/pool/main/s/servicefabricsdkcommon/servicefabric_sdkcommon_1.4.2.deb
-ExitIfError $?  "Error@$LINENO: Failed to download Service Fabric SDK"
-
-dpkg -i servicefabric_sdkcommon_1.4.2.deb
-ExitIfError $?  "Error@$LINENO: Failed to install Service Fabric SDK"
+apt-get install servicefabricsdkcommon -f -y
+ExitIfError $? "Error@$LINENO: Failed to install Service Fabric and Service Fabric SDK"
 
 #
 # Setup Azure Service Fabric CLI
