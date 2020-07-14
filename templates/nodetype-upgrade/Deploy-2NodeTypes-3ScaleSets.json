@@ -1139,7 +1139,7 @@
                                     "publisher": "Microsoft.Azure.ServiceFabric",
                                     "settings": {
                                         "clusterEndpoint": "[reference(parameters('clusterName')).clusterEndpoint]",
-                                        "nodeTypeRef": "[parameters('vmNodeType2Name')]",
+                                        "nodeTypeRef": "[parameters('vmNodeType0Name')]",
                                         "dataPath": "D:\\\\SvcFab",
                                         "durabilityLevel": "Silver",
                                         "enableParallelJobs": true,
