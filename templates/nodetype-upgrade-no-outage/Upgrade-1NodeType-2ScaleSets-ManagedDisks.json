@@ -833,7 +833,7 @@
                                     "publisher": "Microsoft.Azure.ServiceFabric",
                                     "settings": {
                                         "clusterEndpoint": "[reference(parameters('clusterName')).clusterEndpoint]",
-                                        "nodeTypeRef": "[parameters('vmNodeType0Name')]",
+                                        "nodeTypeRef": "[parameters('vmNodeType1Name')]",
                                         "dataPath": "D:\\\\SvcFab",
                                         "durabilityLevel": "Silver",
                                         "enableParallelJobs": true,
@@ -966,8 +966,8 @@
                 }
             },
             "sku": {
-                "name": "[parameters('vmNodeType1Size')]",
-                "capacity": "[parameters('nt1InstanceCount')]",
+                "name": "[parameters('vmNodeType0Size')]",
+                "capacity": "[parameters('nt0InstanceCount')]",
                 "tier": "Standard"
             },
             "tags": {
@@ -1034,6 +1034,22 @@
                 "nodeTypes": [
                     {
                         "name": "[parameters('vmNodeType0Name')]",
+                        "applicationPorts": {
+                            "endPort": "[parameters('nt0applicationEndPort')]",
+                            "startPort": "[parameters('nt0applicationStartPort')]"
+                        },
+                        "clientConnectionEndpointPort": "[parameters('nt0fabricTcpGatewayPort')]",
+                        "durabilityLevel": "Silver",
+                        "ephemeralPorts": {
+                            "endPort": "[parameters('nt0ephemeralEndPort')]",
+                            "startPort": "[parameters('nt0ephemeralStartPort')]"
+                        },
+                        "httpGatewayEndpointPort": "[parameters('nt0fabricHttpGatewayPort')]",
+                        "isPrimary": true,
+                        "vmInstanceCount": "[parameters('nt0InstanceCount')]"
+                    },
+                    {
+                        "name": "[parameters('vmNodeType1Name')]",
                         "applicationPorts": {
                             "endPort": "[parameters('nt0applicationEndPort')]",
                             "startPort": "[parameters('nt0applicationStartPort')]"
