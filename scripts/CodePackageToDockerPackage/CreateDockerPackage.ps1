@@ -72,9 +72,12 @@ Write-Host "Creating init.bat for docker package"
 New-Item -ItemType file $initScriptPath -Value $initScriptContents -Force | Out-Null
 
 $dockerfilePath = Join-Path $DockerPackageOutputDirectoryPath -ChildPath "Dockerfile"
-$dockerfileContents = "FROM microsoft/service-fabric-reliableservices-windowsservercore:latest
+$dockerfileContents = 'FROM mcr.microsoft.com/windows/servercore:ltsc2019
+ADD https://raw.githubusercontent.com/microsoft/service-fabric-scripts-and-templates/master/docker/service-fabric-reliableservices-windowsservercore/InstallPreReq.ps1 /
+RUN powershell -File C:\InstallPreReq.ps1
+RUN setx PATH "%PATH%;C:\sffabricbin;C:\sffabricruntimeload" /M
 ADD publish/ /
-CMD C:\init.bat"
+CMD C:\init.bat'
 
 Write-Host "Creating Dockerfile"				   
 New-Item -ItemType file $dockerfilePath -Value $dockerfileContents -Force | Out-Null
