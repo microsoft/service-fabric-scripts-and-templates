@@ -1,12 +1,12 @@
 ﻿$scriptDirectory = Split-Path -Parent -Path $MyInvocation.MyCommand.Definition
 $containerSetupLogDirectory = Join-Path $scriptDirectory "ContainerSetupLogs"
 
-$dotnetUrl = "https://download.microsoft.com/download/5/6/B/56BFEF92-9045-4414-970C-AB31E0FC07EC/dotnet-runtime-2.0.0-win-x64.exe"
+$dotnetUrl = "https://download.visualstudio.microsoft.com/download/pr/518aafee-1285-4153-a30a-e4eefd538c90/6437d77a67b9c6b8cf0b7b3323004229/dotnet-runtime-3.1.6-win-x64.exe"
 $vcpp11redistUrl = "https://download.microsoft.com/download/1/6/B/16B06F60-3B20-4FF2-B699-5E9B7962F9AE/VSU_4/vcredist_x64.exe"
 $vcpp14redistUrl = "https://download.visualstudio.microsoft.com/download/pr/11687625/2cd2dba5748dc95950a5c42c2d2d78e4/VC_redist.x64.exe"
 
 $TempDir = $env:TEMP
-$dotnetPath = Join-Path $TempDir "dotnet-runtime-2.0.0-win-x64.exe"
+$dotnetPath = Join-Path $TempDir "dotnet-runtime-3.1.6-win-x64.exe"
 $vcpp11redistPath = Join-Path $TempDir "vcredist_x64.exe"
 $vcpp14redistPath = Join-Path $TempDir "vc14_redist.x64.exe"
 
@@ -63,7 +63,7 @@ if(Test-Path($dotnetPath))
 {
     Write-Output "$($dotnetPath) file download Time: $(($DownloadEndTime).Subtract($DownloadStartTime).TotalSeconds) secs"
 
-    Write-Output "Installing dotnet 2.0.0..."
+    Write-Output "Installing dotnet 3.1.6..."
 
     Start-Process "$dotnetPath" -ArgumentList "/install /quiet /norestart /log $(Join-Path $containerSetupLogDirectory log.txt)" -Wait
 
