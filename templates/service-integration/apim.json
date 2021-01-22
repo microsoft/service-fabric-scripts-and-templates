@@ -42,10 +42,10 @@
                 "description": "Certificate password to use to talk to Service Fabric Backend."
             }
         },
-        "serviceFabricCertificateThumbprint": {
+        "serviceFabricCertificateId": {
             "type": "string",
             "metadata": {
-                "description": "Certificate Thumbprint to use to talk to Service Fabric Backend."
+                "description": "Certificate Id to use to talk to Service Fabric Backend."
             }
         },
         "clusterHttpManagementEndpoint": {

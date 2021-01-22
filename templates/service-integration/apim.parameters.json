@@ -20,8 +20,8 @@
         "certificatePassword": {
             "value": "q6D7nN%6ck@6"
         },
-        "serviceFabricCertificateThumbprint": {
-            "value": ""
+        "serviceFabricCertificateId": {
+            "value": "/subscriptions/subid/resourceGroups/rg1/providers/Microsoft.ApiManagement/service/apimService1/certificates/cert1"
         },
         "url_path": {
             "value": "/api/values"
@@ -29,7 +29,7 @@
         "clusterHttpManagementEndpoint": {
             "value": "https://mysfcluster123.southcentralus.cloudapp.azure.com:19080"
         },
-        "inbound_policy":{
+        "inbound_policy": {
             "value": "<policies>\r\n  <inbound>\r\n    <base />\r\n    <set-backend-service backend-id=\"servicefabric\" sf-service-instance-name=\"fabric:/ApiApplication/WebApiService\" sf-resolve-condition=\"@((int)context.Response.StatusCode != 200)\" />\r\n  </inbound>\r\n  <backend>\r\n    <base />\r\n  </backend>\r\n  <outbound>\r\n    <base />\r\n  </outbound>\r\n  <on-error>\r\n    <base />\r\n  </on-error>\r\n</policies>"
         },
         "policies_policy_name": {
