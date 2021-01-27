@@ -30,17 +30,13 @@
             "defaultValue": "service-fabric-certificate-name",
             "type": "string"
         },
-        "serviceFabricCertificate": {
-            "type": "securestring",
-            "metadata": {
-                "description": "Base-64 encoded  PFX certificate to talk to Service Fabric Backend ."
-            }
+        "identityClientId": {
+            "type": "string",
+            "description": "Management identity ClientId to fetch certificate to talk to Service Fabric Backend ."
         },
-        "certificatePassword": {
-            "type": "securestring",
-            "metadata": {
-                "description": "Certificate password to use to talk to Service Fabric Backend."
-            }
+        "secretIdentifier": {
+            "type": "string",
+            "description": "secret Identifier of Certificate stored in Azure Key Vault."
         },
         "serviceFabricCertificateId": {
             "type": "string",
@@ -68,7 +64,7 @@
         },
         "apim_service_fabric_product_name": {
             "defaultValue": "service-fabric-api-product",
-            "type": "String"
+            "type": "string"
         },
         "service_fabric_backend_name": {
             "defaultValue": "servicefabric",
@@ -97,7 +93,7 @@
             }
         },
         "vnetVersion": {
-            "defaultValue": "2017-03-01",
+            "defaultValue": "2020-06-01-preview",
             "type": "string",
             "metadata": {
                 "description": "The version of the VNET resource to which the subnet belongs as defined by the subnetName parameter."
@@ -111,7 +107,7 @@
             }
         },
         "networkSecurityGroupVersion": {
-            "defaultValue": "2017-03-01",
+            "defaultValue": "2020-06-01-preview",
             "type": "string",
             "metadata": {
                 "description": "The version of the Network Security Group resource."
@@ -130,7 +126,7 @@
                 "capacity": 1
             },
             "name": "[parameters('apimInstanceName')]",
-            "apiVersion": "2017-03-01",
+            "apiVersion": "2019-12-01",
             "location": "[variables('location')]",
             "tags": {},
             "properties": {
@@ -147,19 +143,21 @@
             }
         },
         {
-            "apiVersion": "2017-03-01",
+            "apiVersion": "2020-06-01-preview",
             "type": "Microsoft.ApiManagement/service/certificates",
             "name": "[concat(parameters('apimInstanceName'), '/', parameters('serviceFabricCertificateName'))]",
             "dependsOn": [
                 "[resourceId('Microsoft.ApiManagement/service', parameters('apimInstanceName'))]"
             ],
             "properties": {
-                "data": "[parameters('serviceFabricCertificate')]",
-                "password": "[parameters('certificatePassword')]"
+                "keyVault": {
+                    "identityClientId": "[parameters('identityClientId')]",
+                    "secretIdentifier": "[parameters('secretIdentifier')]"
+                  }
             }
         },
         {
-            "apiVersion": "2017-03-01",
+            "apiVersion": "2020-06-01-preview",
             "type": "Microsoft.ApiManagement/service/backends",
             "name": "[concat(parameters('apimInstanceName'), '/', parameters('service_fabric_backend_name'))]",
             "dependsOn": [
@@ -176,9 +174,9 @@
                         "managementEndpoints": [
                             "[parameters('clusterHttpManagementEndpoint')]"
                         ],
-                        "clientCertificateThumbprint": "[parameters('serviceFabricCertificateThumbprint')]",
-                        "serverCertificateThumbprints": [
-                            "[parameters('serviceFabricCertificateThumbprint')]"
+                        "clientCertificateId": "[parameters('serviceFabricCertificateId')]",
+                        "serverCertificateIds": [
+                            "[parameters('serviceFabricCertificateId')]"
                         ],
                         "maxPartitionResolutionRetries": 5
                     }
@@ -188,7 +186,7 @@
         {
             "type": "Microsoft.ApiManagement/service/products",
             "name": "[concat(parameters('apimInstanceName'), '/', parameters('apim_service_fabric_product_name'))]",
-            "apiVersion": "2017-03-01",
+            "apiVersion": "2020-06-01-preview",
             "scale": null,
             "properties": {
                 "displayName": "Service Fabric Apis",
@@ -206,7 +204,7 @@
         {
             "type": "Microsoft.ApiManagement/service/apis",
             "name": "[concat(parameters('apimInstanceName'), '/', parameters('apis_service_fabric_app_name'))]",
-            "apiVersion": "2017-03-01",
+            "apiVersion": "2020-06-01-preview",
             "scale": null,
             "properties": {
                 "displayName": "Service Fabric App",
@@ -229,7 +227,7 @@
         {
             "type": "Microsoft.ApiManagement/service/apis/operations",
             "name": "[concat(parameters('apimInstanceName'), '/', parameters('apis_service_fabric_app_name'), '/', parameters('apis_service_fabric_app_name_operation'))]",
-            "apiVersion": "2017-03-01",
+            "apiVersion": "2020-06-01-preview",
             "scale": null,
             "properties": {
                 "displayName": "Values",
@@ -246,7 +244,7 @@
         {
             "type": "Microsoft.ApiManagement/service/apis/policies",
             "name": "[concat(parameters('apimInstanceName'), '/', parameters('apis_service_fabric_app_name'), '/', parameters('policies_policy_name'))]",
-            "apiVersion": "2017-03-01",
+            "apiVersion": "2020-06-01-preview",
             "properties": {
                 "policyContent": "[parameters('inbound_policy')]"
             },
@@ -259,7 +257,7 @@
         {
             "type": "Microsoft.ApiManagement/service/products/apis",
             "name": "[concat(parameters('apimInstanceName'), '/', parameters('apim_service_fabric_product_name'), '/', parameters('apis_service_fabric_app_name'))]",
-            "apiVersion": "2017-03-01",
+            "apiVersion": "2020-06-01-preview",
             "scale": null,
             "properties": {},
             "dependsOn": [
