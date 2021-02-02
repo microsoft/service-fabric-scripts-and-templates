@@ -32,11 +32,15 @@
         },
         "identityClientId": {
             "type": "string",
-            "description": "Management identity ClientId to fetch certificate to talk to Service Fabric Backend ."
+            "metadata": {
+                "description": "Management identity ClientId to fetch certificate to talk to Service Fabric Backend ."
+            }
         },
         "secretIdentifier": {
             "type": "string",
-            "description": "secret Identifier of Certificate stored in Azure Key Vault."
+            "metadata": {
+                "description": "secret Identifier of Certificate stored in Azure Key Vault."
+            }
         },
         "serviceFabricCertificateId": {
             "type": "string",
@@ -93,7 +97,7 @@
             }
         },
         "vnetVersion": {
-            "defaultValue": "2020-06-01-preview",
+            "defaultValue": "2017-03-01",
             "type": "string",
             "metadata": {
                 "description": "The version of the VNET resource to which the subnet belongs as defined by the subnetName parameter."
@@ -107,7 +111,7 @@
             }
         },
         "networkSecurityGroupVersion": {
-            "defaultValue": "2020-06-01-preview",
+            "defaultValue": "2017-03-01",
             "type": "string",
             "metadata": {
                 "description": "The version of the Network Security Group resource."

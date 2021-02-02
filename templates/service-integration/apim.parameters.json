@@ -54,13 +54,13 @@
             "value": "apim-subnet"
         },
         "vnetVersion": {
-            "value": "2020-06-01-preview"
+            "value": "2017-03-01"
         },
         "networkSecurityGroupName": {
             "value": "apim-vnet-security"
         },
         "networkSecurityGroupVersion": {
-            "value": "2020-06-01-preview"
+            "value": "2017-03-01"
         },
         "identityClientId": {
             "value": "ceaa6b06-c00f-43ef-99ac-f53d1fe876a0"
