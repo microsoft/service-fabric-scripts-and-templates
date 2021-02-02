@@ -39,8 +39,7 @@
         "secretIdentifier": {
             "type": "string",
             "metadata": {
-                "description": "secret Identifier of Certificate stored in Azure Key Vault."
-            }
+            "description": "secret Identifier of Certificate stored in Azure Key Vault."}
         },
         "serviceFabricCertificateId": {
             "type": "string",
@@ -190,7 +189,7 @@
         {
             "type": "Microsoft.ApiManagement/service/products",
             "name": "[concat(parameters('apimInstanceName'), '/', parameters('apim_service_fabric_product_name'))]",
-            "apiVersion": "2020-06-01-preview",
+            "apiVersion": "2017-03-01",
             "scale": null,
             "properties": {
                 "displayName": "Service Fabric Apis",
@@ -208,7 +207,7 @@
         {
             "type": "Microsoft.ApiManagement/service/apis",
             "name": "[concat(parameters('apimInstanceName'), '/', parameters('apis_service_fabric_app_name'))]",
-            "apiVersion": "2020-06-01-preview",
+            "apiVersion": "2017-03-01",
             "scale": null,
             "properties": {
                 "displayName": "Service Fabric App",
@@ -231,7 +230,7 @@
         {
             "type": "Microsoft.ApiManagement/service/apis/operations",
             "name": "[concat(parameters('apimInstanceName'), '/', parameters('apis_service_fabric_app_name'), '/', parameters('apis_service_fabric_app_name_operation'))]",
-            "apiVersion": "2020-06-01-preview",
+            "apiVersion": "2017-03-01",
             "scale": null,
             "properties": {
                 "displayName": "Values",
@@ -248,7 +247,7 @@
         {
             "type": "Microsoft.ApiManagement/service/apis/policies",
             "name": "[concat(parameters('apimInstanceName'), '/', parameters('apis_service_fabric_app_name'), '/', parameters('policies_policy_name'))]",
-            "apiVersion": "2020-06-01-preview",
+            "apiVersion": "2017-03-01",
             "properties": {
                 "policyContent": "[parameters('inbound_policy')]"
             },
@@ -261,7 +260,7 @@
         {
             "type": "Microsoft.ApiManagement/service/products/apis",
             "name": "[concat(parameters('apimInstanceName'), '/', parameters('apim_service_fabric_product_name'), '/', parameters('apis_service_fabric_app_name'))]",
-            "apiVersion": "2020-06-01-preview",
+            "apiVersion": "2017-03-01",
             "scale": null,
             "properties": {},
             "dependsOn": [
