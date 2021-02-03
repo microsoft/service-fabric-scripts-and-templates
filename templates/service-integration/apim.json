@@ -30,16 +30,21 @@
             "defaultValue": "service-fabric-certificate-name",
             "type": "string"
         },
-        "serviceFabricCertificate": {
-            "type": "securestring",
+        "identityClientId": {
+            "type": "string",
             "metadata": {
-                "description": "Base-64 encoded  PFX certificate to talk to Service Fabric Backend ."
+                "description": "Management identity ClientId to fetch certificate to talk to Service Fabric Backend ."
             }
         },
-        "certificatePassword": {
-            "type": "securestring",
+        "secretIdentifier": {
+            "type": "string",
             "metadata": {
-                "description": "Certificate password to use to talk to Service Fabric Backend."
+            "description": "secret Identifier of Certificate stored in Azure Key Vault."}
+        },
+        "serviceFabricCertificateId": {
+            "type": "string",
+            "metadata": {
+                "description": "Certificate Id to use to talk to Service Fabric Backend."
             }
         },
         "serviceFabricCertificateThumbprint": {
@@ -68,7 +73,7 @@
         },
         "apim_service_fabric_product_name": {
             "defaultValue": "service-fabric-api-product",
-            "type": "String"
+            "type": "string"
         },
         "service_fabric_backend_name": {
             "defaultValue": "servicefabric",
@@ -130,7 +135,7 @@
                 "capacity": 1
             },
             "name": "[parameters('apimInstanceName')]",
-            "apiVersion": "2017-03-01",
+            "apiVersion": "2019-12-01",
             "location": "[variables('location')]",
             "tags": {},
             "properties": {
@@ -147,19 +152,21 @@
             }
         },
         {
-            "apiVersion": "2017-03-01",
+            "apiVersion": "2020-06-01-preview",
             "type": "Microsoft.ApiManagement/service/certificates",
             "name": "[concat(parameters('apimInstanceName'), '/', parameters('serviceFabricCertificateName'))]",
             "dependsOn": [
                 "[resourceId('Microsoft.ApiManagement/service', parameters('apimInstanceName'))]"
             ],
             "properties": {
-                "data": "[parameters('serviceFabricCertificate')]",
-                "password": "[parameters('certificatePassword')]"
+                "keyVault": {
+                    "identityClientId": "[parameters('identityClientId')]",
+                    "secretIdentifier": "[parameters('secretIdentifier')]"
+                  }
             }
         },
         {
-            "apiVersion": "2017-03-01",
+            "apiVersion": "2020-06-01-preview",
             "type": "Microsoft.ApiManagement/service/backends",
             "name": "[concat(parameters('apimInstanceName'), '/', parameters('service_fabric_backend_name'))]",
             "dependsOn": [
@@ -176,7 +183,7 @@
                         "managementEndpoints": [
                             "[parameters('clusterHttpManagementEndpoint')]"
                         ],
-                        "clientCertificateThumbprint": "[parameters('serviceFabricCertificateThumbprint')]",
+                        "clientCertificateId": "[parameters('serviceFabricCertificateId')]",
                         "serverCertificateThumbprints": [
                             "[parameters('serviceFabricCertificateThumbprint')]"
                         ],
