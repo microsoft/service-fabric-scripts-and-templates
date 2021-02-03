@@ -14,11 +14,8 @@
         "serviceFabricCertificateName": {
             "value": "sfclustertutorialgroup320171031144217"
         },
-        "serviceFabricCertificate": {
+        "serviceFabricCertificateThumbprint": {
             "value": ""
-        },
-        "certificatePassword": {
-            "value": "q6D7nN%6ck@6"
         },
         "serviceFabricCertificateId": {
             "value": "/subscriptions/subid/resourceGroups/rg1/providers/Microsoft.ApiManagement/service/apimService1/certificates/cert1"

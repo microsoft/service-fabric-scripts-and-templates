@@ -47,6 +47,12 @@
                 "description": "Certificate Id to use to talk to Service Fabric Backend."
             }
         },
+        "serviceFabricCertificateThumbprint": {
+            "type": "string",
+            "metadata": {
+                "description": "Certificate Thumbprint to use to talk to Service Fabric Backend."
+            }
+        },
         "clusterHttpManagementEndpoint": {
             "type": "string",
             "metadata": {
@@ -178,8 +184,8 @@
                             "[parameters('clusterHttpManagementEndpoint')]"
                         ],
                         "clientCertificateId": "[parameters('serviceFabricCertificateId')]",
-                        "serverCertificateIds": [
-                            "[parameters('serviceFabricCertificateId')]"
+                        "serverCertificateThumbprints": [
+                            "[parameters('serviceFabricCertificateThumbprint')]"
                         ],
                         "maxPartitionResolutionRetries": 5
                     }
