@@ -77,7 +77,7 @@ if [ "systemd"!="$pidone" ]; then
         genie -c curl -fsSL https://packages.microsoft.com/keys/msopentech.asc | sudo apt-key add -
         # genie -c ExitIfError $?  "Error@$LINENO: Failed to add MS GPG key"
 
-		genie -c curl -fsSL https://download.docker.com/linux/ubauntu/gpg | sudo apt-key add -
+        genie -c curl -fsSL https://download.docker.com/linux/ubauntu/gpg | sudo apt-key add -
         # genie -c ExitIfError $?  "Error@$LINENO: Failed to add Docker GPG key"
 
         genie -c add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
@@ -88,7 +88,7 @@ if [ "systemd"!="$pidone" ]; then
 
         genie -c apt-get -y update
 
-		echo "Installing servicefabricsdkcommon"
+        echo "Installing servicefabricsdkcommon"
         genie -c echo "servicefabric servicefabric/accepted-eula-ga select true" | sudo debconf-set-selections
         genie -c echo "servicefabricsdkcommon servicefabricsdkcommon/accepted-eula-ga select true" | sudo debconf-set-selections
         genie -c apt-get -y install servicefabricsdkcommon
@@ -96,10 +96,10 @@ if [ "systemd"!="$pidone" ]; then
 
         # install pyton-pip and sfctl
         genie -c apt-get -y install python-pip
-		# genie -c ExitIfError $?  "Error@$LINENO: Failed to install python for sfctl setup."
+        # genie -c ExitIfError $?  "Error@$LINENO: Failed to install python for sfctl setup."
 
         genie -c pip install sfctl
-		# genie -c ExitIfError $?  "Error@$LINENO: sfctl installation failed."
+        # genie -c ExitIfError $?  "Error@$LINENO: sfctl installation failed."
 
         #echo "Starting cluster"
         #genie -c /opt/microsoft/sdk/servicefabric/common/clustersetup/devclustersetup.sh
