@@ -28,7 +28,7 @@ fi
 
 # Check if systemd is running as PID1, if not it should enabled via system-genie
 pidone=$(ps --no-headers -o comm 1)
-if [ "systemd"!="$pidone" ]; then
+if [ "systemd" != "$pidone" ]; then
 	# Setting up system-genie to run systemd as PID 1
     echo "Setting up system-genie to run systemd as PID 1"
     echo "Installing .NET SDK and runtime 5.0"
