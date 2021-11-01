@@ -26,10 +26,10 @@ if [[ "xenial" != "$Distribution" && "bionic" != "$Distribution" ]]; then
     exit -1
 fi
 
-# Check if systemd is running as PID1, if not it should enabled via system-genie
+# Check if systemd is running as PID1, if not it should be enabled via system-genie
 pidone=$(ps --no-headers -o comm 1)
 if [ "systemd" != "$pidone" ]; then
-	# Setting up system-genie to run systemd as PID 1
+    # Set system-genie to run systemd as PID 1
     echo "Setting up system-genie to run systemd as PID 1"
     echo "Installing .NET SDK and runtime 5.0"
     wget https://packages.microsoft.com/config/ubuntu/21.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
@@ -63,10 +63,12 @@ if [ "systemd" != "$pidone" ]; then
     echo "Installing system-genie"
     apt install -y systemd-genie
 
+    # Start genie
     echo "Starting genie"
     genie -i
     echo "Genie has been started"
 
+    # Setup service fabric runtime and sdk inside genie namespace
     sudo -i -u root bash << EOF
         # sed -i 's/nameserver.*/nameserver 172.17.176.1/' /etc/resolv.conf
 
@@ -100,9 +102,6 @@ if [ "systemd" != "$pidone" ]; then
 
         genie -c pip install sfctl
         # genie -c ExitIfError $?  "Error@$LINENO: sfctl installation failed."
-
-        #echo "Starting cluster"
-        #genie -c /opt/microsoft/sdk/servicefabric/common/clustersetup/devclustersetup.sh
 EOF
 
 else
