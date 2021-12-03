@@ -5,7 +5,7 @@
 # It also sets up Azure Service Fabric CLI
 #
 # Usage: sudo ./SetupServiceFabric.sh
-# Setting up Service Fabric from local .deb packages is supported for WSL2 based Linux VM
+# Setting up Service Fabric from local service fabric runtime and sdk debain packages is all supported, both two debain packages will be needed for installation.
 # This script should be called with path of sf runtime and sf sdk. Below is the sample
 # sudo ./setup.sh --servicefabricruntime=/mnt/c/Users/sindoria/Downloads/servicefabric_8.2.142.2.deb --servicefabricsdk=/mnt/c/Users/sindoria/Downloads/servicefabric_sdkcommon_1.4.2.deb
 # In above scenario sf runtime is located at C:\Users\sindoria\Downloads\servicefabric_8.2.142.2.deb in windows host but in VM it will look like /mnt/c/Users/sindoria/Downloads/servicefabric_8.2.142.2.deb
@@ -100,12 +100,12 @@ genieCommand=''
 isGenieInstalled=$(apt list --installed | grep systemd-genie)
 
 if [[ ! -z "$isGenieInstalled" ]]; then
-	isGenieRunning=$(genie -r)
-	isOutsideGenie=$(genie -b)
+    isGenieRunning=$(genie -r)
+    isOutsideGenie=$(genie -b)
 
-	if [[ "$isGenieRunning"=="runnning" && "$isOutsideGenie"=="outside" ]]; then
-		genieCommand="genie -c"
-	fi
+    if [[ "$isGenieRunning"=="runnning" && "$isOutsideGenie"=="outside" ]]; then
+        genieCommand="genie -c"
+    fi
 fi
 
 #
@@ -131,7 +131,6 @@ ExitIfError $?  "Error@$LINENO: Failed to add key for zulu repo"
 
 apt-get update
 
-
 #
 # Install Service Fabric SDK.
 #
@@ -142,21 +141,20 @@ echo "servicefabricsdkcommon servicefabricsdkcommon/accepted-eula-ga select true
 #  If local debian packages for ServiceFabricRunTime and ServiceFabricSDK are provided, install SF SDK from these packages
 #
 if [[ ! -z $ServiceFabricRuntimePath ]] && [[ ! -z $ServiceFabricSdkPath ]]; then
-	echo "Copying $ServiceFabricRuntimePath to /opt/servicefabricruntime.deb"
-	cp $ServiceFabricRuntimePath /opt/servicefabricruntime.deb
-	echo "Copying $ServiceFabricSdkPath to /opt/servicefabricsdkcommon.deb"
-	cp $ServiceFabricSdkPath /opt/servicefabricsdkcommon.deb
+    echo "Copying $ServiceFabricRuntimePath to /opt/servicefabricruntime.deb"
+    cp $ServiceFabricRuntimePath /opt/servicefabricruntime.deb
+    echo "Copying $ServiceFabricSdkPath to /opt/servicefabricsdkcommon.deb"
+    cp $ServiceFabricSdkPath /opt/servicefabricsdkcommon.deb
 
-	echo "Installing servicefabricsdkcommon from local .deb packages"
-
+    echo "Installing servicefabricsdkcommon from local .deb packages"
     $genieCommand apt -y install /opt/servicefabricruntime.deb
     $genieCommand apt -y install /opt/servicefabricsdkcommon.deb
     echo "Removing /opt/servicefabricruntime.deb and /opt/servicefabricsdkcommon.deb"
     rm /opt/servicefabricruntime.deb
     rm /opt/servicefabricsdkcommon.deb
 else
-	$genieCommand apt-get install servicefabricsdkcommon -f -y
-	ExitIfError $?  "Error@$LINENO: Failed to install Service Fabric SDK"
+    $genieCommand apt-get install servicefabricsdkcommon -f -y
+    ExitIfError $?  "Error@$LINENO: Failed to install Service Fabric SDK"
 fi
 
 #
