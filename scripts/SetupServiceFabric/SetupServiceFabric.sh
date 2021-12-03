@@ -50,11 +50,11 @@ case $i in
 esac
 done
 
-# Check if systemd is running as PID1, if not it should be enabled via system-genie
+# Check if systemd is running as PID1, if not it should be enabled via systemd-genie
 pidone=$(ps --no-headers -o comm 1)
-if [ "systemd" != "$pidone" ]; then
-    # Set system-genie to run systemd as PID 1
-    echo "Setting up system-genie to run systemd as PID 1"
+if [[ "systemd" != "$pidone" ]]; then
+    # Set systemd-genie to run systemd as PID 1
+    echo "Setting up systemd-genie to run systemd as PID 1"
     echo "Installing .NET SDK and runtime 5.0"
     wget https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
     dpkg -i packages-microsoft-prod.deb
@@ -84,68 +84,29 @@ if [ "systemd" != "$pidone" ]; then
     cat $file
 
     apt update
-    echo "Installing system-genie"
+    echo "Installing systemd-genie"
     apt install -y systemd-genie
 
     # Start genie
     echo "Starting genie"
     genie -i
     echo "Genie has been started"
-
-	if [[ ! -z $ServiceFabricRuntimePath ]] && [[ ! -z $ServiceFabricSdkPath ]]
-	then
-		echo "Copying $ServiceFabricRuntimePath to /opt/servicefabricruntime.deb"
-		cp $ServiceFabricRuntimePath /opt/servicefabricruntime.deb
-		echo "Copying $ServiceFabricSdkPath to /opt/servicefabricsdkcommon.deb"
-		cp $ServiceFabricSdkPath /opt/servicefabricsdkcommon.deb
 fi
 
-    # Setup service fabric runtime and sdk inside genie namespace
-    sudo -i -u root bash << EOF
-        genie -c wget -q https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb
-        genie -c dpkg -i packages-microsoft-prod.deb
+#
+# If setup is being done inside WLS2 Distribution, then below helps in doing installation inside genie namespace if needed
+#
+genieCommand=''
+isGenieInstalled=$(apt list --installed | grep systemd-genie)
 
-        genie -c curl -fsSL https://packages.microsoft.com/keys/msopentech.asc | sudo apt-key add -
+if [[ ! -z "$isGenieInstalled" ]]; then
+	isGenieRunning=$(genie -r)
+	isOutsideGenie=$(genie -b)
 
-        genie -c curl -fsSL https://download.docker.com/linux/ubauntu/gpg | sudo apt-key add -
-
-        genie -c add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-
-        genie -c apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 0xB1998361219BD9C9
-        genie -c apt-add-repository "deb http://repos.azul.com/azure-only/zulu/apt stable main"
-
-        genie -c apt-get -y update
-
-        genie -c echo "servicefabric servicefabric/accepted-eula-ga select true" | sudo debconf-set-selections
-        genie -c echo "servicefabricsdkcommon servicefabricsdkcommon/accepted-eula-ga select true" | sudo debconf-set-selections
-EOF
-
-if [[ ! -z $ServiceFabricRuntimePath ]] && [[ ! -z $ServiceFabricSdkPath ]]
-then
-    sudo -i -u root bash << EOF
-        echo "Installing servicefabricsdkcommon from local .deb packages"
-
-        genie -c apt -y install /opt/servicefabricruntime.deb
-        genie -c apt -y install /opt/servicefabricsdkcommon.deb
-        echo "Removing /opt/servicefabricruntime.deb and /opt/servicefabricsdkcommon.deb"
-        genie -c rm /opt/servicefabricruntime.deb
-        genie -c rm /opt/servicefabricsdkcommon.deb
-EOF
-
-else
-	sudo -i -u root bash << EOF
-        echo "Installing servicefabricsdkcommon"
-        genie -c apt-get -y install servicefabricsdkcommon
-EOF
+	if [[ "$isGenieRunning"=="runnning" && "$isOutsideGenie"=="outside" ]]; then
+		genieCommand="genie -c"
+	fi
 fi
-
-    sudo -i -u root bash << EOF
-        # install pyton-pip and sfctl
-        genie -c apt-get -y install python-pip
-        genie -c pip install sfctl
-EOF
-
-else
 
 #
 # Install all packages
@@ -174,29 +135,43 @@ apt-get update
 #
 # Install Service Fabric SDK.
 #
-
 echo "servicefabric servicefabric/accepted-eula-ga select true" | debconf-set-selections
 echo "servicefabricsdkcommon servicefabricsdkcommon/accepted-eula-ga select true" | debconf-set-selections
 
-apt-get install servicefabricsdkcommon -f -y
-ExitIfError $?  "Error@$LINENO: Failed to install Service Fabric SDK"
+#
+#  If local debian packages for ServiceFabricRunTime and ServiceFabricSDK are provided, install SF SDK from these packages
+#
+if [[ ! -z $ServiceFabricRuntimePath ]] && [[ ! -z $ServiceFabricSdkPath ]]; then
+	echo "Copying $ServiceFabricRuntimePath to /opt/servicefabricruntime.deb"
+	cp $ServiceFabricRuntimePath /opt/servicefabricruntime.deb
+	echo "Copying $ServiceFabricSdkPath to /opt/servicefabricsdkcommon.deb"
+	cp $ServiceFabricSdkPath /opt/servicefabricsdkcommon.deb
 
+	echo "Installing servicefabricsdkcommon from local .deb packages"
+
+    $genieCommand apt -y install /opt/servicefabricruntime.deb
+    $genieCommand apt -y install /opt/servicefabricsdkcommon.deb
+    echo "Removing /opt/servicefabricruntime.deb and /opt/servicefabricsdkcommon.deb"
+    rm /opt/servicefabricruntime.deb
+    rm /opt/servicefabricsdkcommon.deb
+else
+	$genieCommand apt-get install servicefabricsdkcommon -f -y
+	ExitIfError $?  "Error@$LINENO: Failed to install Service Fabric SDK"
+fi
 
 #
 # Setup Azure Service Fabric CLI
 #
 
-apt-get install python -f -y
+$genieCommand apt-get install python -f -y
 ExitIfError $?  "Error@$LINENO: Failed to install python for sfctl setup."
 
-apt-get install python-pip -f -y
+$genieCommand apt-get install python-pip -f -y
 ExitIfError $?  "Error@$LINENO: Failed to install pip for sfctl setup."
 
-pip install sfctl
+$genieCommand pip install sfctl
 ExitIfError $?  "Error@$LINENO: sfctl installation failed."
 
 export PATH=$PATH:$HOME/.local/bin/
 
 echo "Successfully completed Service Fabric SDK installation and setup."
-
-fi
