@@ -106,6 +106,29 @@ if [[ ! -z "$isGenieInstalled" ]]; then
     if [[ "$isGenieRunning"=="runnning" && "$isOutsideGenie"=="outside" ]]; then
         genieCommand="genie -c"
     fi
+
+    # if genie is used for cluster management, current user should get permission to control service without sudo password.
+    # This enables cluster management from windows host via Powershell or LocalClusterManager.
+    # find user running the script
+    usr=$SUDO_USER
+    # if this script is being run by root dont do anything
+    if [ -z "$usr" ] || [ "root" = "$usr" ]; then
+        echo "This script should be run by default user with sudo, otherwise add <USERNAME ALL = (ALL) NOPASSWD:ALL> in /etc/sudoers manually. This enables linux cluster management from windwos host via powershell or LocalClusterManager."
+    else
+        # Copy /etc/sudoers to /tmp/sudoers.new
+        cp /etc/sudoers /tmp/sudoers.new
+        # Remove entery if exists and then make an entry for current user
+        userentry="$usr ALL = (ALL) NOPASSWD:ALL"
+        sed -i "/${userentry}/d" /tmp/sudoers.new
+        sed -i "$ a ${userentry}" /tmp/sudoers.new
+        # check validity of entry using visudo, if
+        visudo -c -f /tmp/sudoers.new
+        if [ "$?" -eq "0" ]; then
+            echo "hello world"
+            cp /tmp/sudoers.new /etc/sudoers
+        fi
+        rm /tmp/sudoers.new
+    fi
 fi
 
 #
