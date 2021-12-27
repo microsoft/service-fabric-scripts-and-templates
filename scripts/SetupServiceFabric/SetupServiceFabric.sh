@@ -121,10 +121,9 @@ if [[ ! -z "$isGenieInstalled" ]]; then
         userentry="$usr ALL = (ALL) NOPASSWD:ALL"
         sed -i "/${userentry}/d" /tmp/sudoers.new
         sed -i "$ a ${userentry}" /tmp/sudoers.new
-        # check validity of entry using visudo, if
+        # check validity of entry using visudo, if validation is successful, replace /etc/sudoers
         visudo -c -f /tmp/sudoers.new
         if [ "$?" -eq "0" ]; then
-            echo "hello world"
             cp /tmp/sudoers.new /etc/sudoers
         fi
         rm /tmp/sudoers.new
