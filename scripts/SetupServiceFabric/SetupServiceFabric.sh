@@ -3,13 +3,14 @@
 #
 # This script installs and sets up the Service Fabric Runtime and Common SDK.
 # It also sets up Azure Service Fabric CLI
-#
+
 # Usage: sudo ./SetupServiceFabric.sh
-# Setting up Service Fabric from local service fabric runtime and sdk debain packages is all supported, both two debain packages will be needed for installation.
-# This script should be called with path of sf runtime and sf sdk. Below is the sample
-# sudo ./setup.sh --servicefabricruntime=/mnt/c/Users/sindoria/Downloads/servicefabric_8.2.142.2.deb --servicefabricsdk=/mnt/c/Users/sindoria/Downloads/servicefabric_sdkcommon_1.4.2.deb
+# Above fetches Service Fabric Runtime and SDK along with required packages/dependencies from repositories and does the setup.
+# This script also supports installation of SDK from local .deb packages of Servie Fabric runtime and sdk. Both packages will be needed for installation and paths should be provided as parameters.
+# Below is the sample:
+# sudo ./SetupServiceFabric.sh --servicefabricruntime=/mnt/c/Users/sindoria/Downloads/servicefabric_8.2.142.2.deb --servicefabricsdk=/mnt/c/Users/sindoria/Downloads/servicefabric_sdkcommon_1.4.2.deb
 # In above scenario sf runtime is located at C:\Users\sindoria\Downloads\servicefabric_8.2.142.2.deb in windows host but in VM it will look like /mnt/c/Users/sindoria/Downloads/servicefabric_8.2.142.2.deb
-# Above paths should be provided appropriately as per Linux VM
+# Above paths should be provided appropriately as per Linux VM.
 #
 
 if [ "$EUID" -ne 0 ]; then
