@@ -6,11 +6,9 @@
 
 # Usage: sudo ./SetupServiceFabric.sh
 # Above fetches Service Fabric Runtime and SDK along with required packages/dependencies from repositories and does the setup.
-# This script also supports installation of SDK from local .deb packages of Servie Fabric runtime and sdk. Both packages will be needed for installation and paths should be provided as parameters.
+# This script also supports installation of SDK from local .deb packages of Servie Fabric runtime and sdk. Both packages will be needed for installation and paths should be provided as parameter, make sure files are present at given paths.
 # Below is the sample:
 # sudo ./SetupServiceFabric.sh --servicefabricruntime=/mnt/c/Users/sindoria/Downloads/servicefabric_8.2.142.2.deb --servicefabricsdk=/mnt/c/Users/sindoria/Downloads/servicefabric_sdkcommon_1.4.2.deb
-# In above scenario sf runtime is located at C:\Users\sindoria\Downloads\servicefabric_8.2.142.2.deb in windows host but in VM it will look like /mnt/c/Users/sindoria/Downloads/servicefabric_8.2.142.2.deb
-# Above paths should be provided appropriately as per Linux VM.
 #
 
 if [ "$EUID" -ne 0 ]; then
@@ -104,30 +102,32 @@ if [[ ! -z "$isGenieInstalled" ]]; then
     isGenieRunning=$(genie -r)
     isOutsideGenie=$(genie -b)
 
-    if [[ "$isGenieRunning"=="runnning" && "$isOutsideGenie"=="outside" ]]; then
-        genieCommand="genie -c"
-    fi
-
-    # if genie is used for cluster management, current user should get permission to control service without sudo password.
-    # This enables cluster management from windows host via Powershell or LocalClusterManager.
-    # find user running the script
-    usr=$SUDO_USER
-    # if this script is being run by root dont do anything
-    if [ -z "$usr" ] || [ "root" = "$usr" ]; then
-        echo "This script should be run by default user with sudo, otherwise add <USERNAME ALL = (ALL) NOPASSWD:ALL> in /etc/sudoers manually. This enables linux cluster management from windwos host via powershell or LocalClusterManager."
-    else
-        # Copy /etc/sudoers to /tmp/sudoers.new
-        cp /etc/sudoers /tmp/sudoers.new
-        # Remove entery if exists and then make an entry for current user
-        userentry="$usr ALL = (ALL) NOPASSWD:ALL"
-        sed -i "/${userentry}/d" /tmp/sudoers.new
-        sed -i "$ a ${userentry}" /tmp/sudoers.new
-        # check validity of entry using visudo, if validation is successful, replace /etc/sudoers
-        visudo -c -f /tmp/sudoers.new
-        if [ "$?" -eq "0" ]; then
-            cp /tmp/sudoers.new /etc/sudoers
+    if [[ "$isGenieRunning"=="runnning" ]]; then
+        # If outside genie then genie prefix command should be used.
+        if [[ "$isOutsideGenie"=="outside" ]]; then
+            genieCommand="genie -c"
         fi
-        rm /tmp/sudoers.new
+        # if genie is used for cluster management, current user should get permission to control service without sudo password.
+        # This enables cluster management from windows host via Powershell or LocalClusterManager.
+        # find user running the script
+        usr=$SUDO_USER
+        # if this script is being run by root dont do anything
+        if [ -z "$usr" ] || [ "root" = "$usr" ]; then
+            echo "This script should be run by default user with sudo, otherwise add <USERNAME ALL = (ALL) NOPASSWD:ALL> in /etc/sudoers manually. This enables linux cluster management from windwos host via powershell or LocalClusterManager."
+        else
+            # Copy /etc/sudoers to /tmp/sudoers.new
+            cp /etc/sudoers /tmp/sudoers.new
+            # Remove entery if exists and then make an entry for current user
+            userentry="$usr ALL = (ALL) NOPASSWD:ALL"
+            sed -i "/${userentry}/d" /tmp/sudoers.new
+            sed -i "$ a ${userentry}" /tmp/sudoers.new
+            # check validity of entry using visudo, if validation is successful, replace /etc/sudoers
+            visudo -c -f /tmp/sudoers.new
+            if [ "$?" -eq "0" ]; then
+                cp /tmp/sudoers.new /etc/sudoers
+            fi
+            rm /tmp/sudoers.new
+        fi
     fi
 fi
 
