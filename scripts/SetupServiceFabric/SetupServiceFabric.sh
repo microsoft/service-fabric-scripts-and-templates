@@ -164,17 +164,22 @@ echo "servicefabricsdkcommon servicefabricsdkcommon/accepted-eula-ga select true
 #  If local debian packages for ServiceFabricRunTime and ServiceFabricSDK are provided, install SF SDK from these packages
 #
 if [[ ! -z $ServiceFabricRuntimePath ]] && [[ ! -z $ServiceFabricSdkPath ]]; then
-    echo "Copying $ServiceFabricRuntimePath to /opt/servicefabricruntime.deb"
-    cp $ServiceFabricRuntimePath /opt/servicefabricruntime.deb
-    echo "Copying $ServiceFabricSdkPath to /opt/servicefabricsdkcommon.deb"
-    cp $ServiceFabricSdkPath /opt/servicefabricsdkcommon.deb
+    echo "Copying $ServiceFabricRuntimePath to /var/cache/apt/archives/servicefabric.deb"
+    cp $ServiceFabricRuntimePath /var/cache/apt/archives/servicefabric.deb
+    echo "Copying $ServiceFabricSdkPath to /var/cache/apt/archives/servicefabricsdkcommon.deb"
+    cp $ServiceFabricSdkPath /var/cache/apt/archives/servicefabricsdkcommon.deb
 
-    echo "Installing servicefabricsdkcommon from local .deb packages"
-    $genieCommand apt -y install /opt/servicefabricruntime.deb
-    $genieCommand apt -y install /opt/servicefabricsdkcommon.deb
-    echo "Removing /opt/servicefabricruntime.deb and /opt/servicefabricsdkcommon.deb"
-    rm /opt/servicefabricruntime.deb
-    rm /opt/servicefabricsdkcommon.deb
+    echo "Installing servicefabric and servicefabricsdkcommon from local .deb packages"
+    $genieCommand dpkg -i /var/cache/apt/archives/servicefabric.deb
+    # Fix broken dependencies for servicefabric if any.
+    $genieCommand apt-get install -f -y
+    $genieCommand dpkg -i /var/cache/apt/archives/servicefabricsdkcommon.deb
+    # Fix broken dependencies for servicefabricsdkcommon if any.
+    $genieCommand apt-get install -f -y
+
+    echo "Removing /var/cache/apt/archives/servicefabric.deb and /var/cache/apt/archives/servicefabricsdkcommon.deb"
+    rm /var/cache/apt/archives/servicefabric.deb
+    rm /var/cache/apt/archives/servicefabricsdkcommon.deb
 else
     $genieCommand apt-get install servicefabricsdkcommon -f -y
     ExitIfError $?  "Error@$LINENO: Failed to install Service Fabric SDK"
