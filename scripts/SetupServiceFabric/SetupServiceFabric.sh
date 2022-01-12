@@ -189,13 +189,13 @@ fi
 # Setup Azure Service Fabric CLI
 #
 
-$genieCommand apt-get install python -f -y
-ExitIfError $?  "Error@$LINENO: Failed to install python for sfctl setup."
+$genieCommand apt-get install python3 -f -y
+ExitIfError $?  "Error@$LINENO: Failed to install python3 for sfctl setup."
 
-$genieCommand apt-get install python-pip -f -y
+$genieCommand apt-get install python3-pip -f -y
 ExitIfError $?  "Error@$LINENO: Failed to install pip for sfctl setup."
 
-$genieCommand pip install sfctl
+$genieCommand pip3 install sfctl
 ExitIfError $?  "Error@$LINENO: sfctl installation failed."
 
 export PATH=$PATH:$HOME/.local/bin/
