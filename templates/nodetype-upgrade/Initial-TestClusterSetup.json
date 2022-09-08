@@ -46,7 +46,7 @@
     },
     "vmImageSku": {
       "type": "string",
-      "defaultValue": "2016-Datacenter-with-Containers",
+      "defaultValue": "2019-Datacenter",
       "metadata": {
         "description": "VM image SKU"
       }
@@ -170,12 +170,13 @@
     "lbIPName": "PublicIP-LB-FE",
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]",
     "overProvision": "false",
-    "vmssApiVersion": "2018-06-01",
-    "sfrpApiVersion": "2018-02-01",
-    "lbApiVersion": "2018-08-01",
-    "vNetApiVersion": "2018-08-01",
-    "storageApiVersion": "2018-07-01",
-    "publicIPApiVersion": "2018-08-01",
+    "vmssApiVersion": "2020-06-01",
+    "sfrpApiVersion": "2020-03-01",
+    "lbApiVersion": "2020-07-01",
+    "vNetApiVersion": "2020-07-01",
+    "storageApiVersion": "2019-06-01",
+    "publicIPApiVersion": "2020-07-01",
+    "nsgApiVersion": "2017-06-01",
     "nt0applicationStartPort": "20000",
     "nt0applicationEndPort": "30000",
     "nt0ephemeralStartPort": "49152",
@@ -260,11 +261,14 @@
       "type": "Microsoft.Network/publicIPAddresses",
       "name": "[concat(variables('lbIPName'),'-',variables('vmNodeType0Name'))]",
       "location": "[variables('computeLocation')]",
+      "sku": {
+        "name": "Standard"
+      },
       "properties": {
         "dnsSettings": {
           "domainNameLabel": "[variables('dnsName')]"
         },
-        "publicIPAllocationMethod": "Dynamic"
+        "publicIPAllocationMethod": "Static"
       },
       "tags": {
         "resourceType": "Service Fabric",
@@ -276,6 +280,9 @@
       "type": "Microsoft.Network/loadBalancers",
       "name": "[concat('LB','-', parameters('clusterName'),'-',variables('vmNodeType0Name'))]",
       "location": "[variables('computeLocation')]",
+      "sku": {
+        "name": "Standard"
+      },
       "dependsOn": [
         "[concat('Microsoft.Network/publicIPAddresses/',concat(variables('lbIPName'),'-',variables('vmNodeType0Name')))]"
       ],
@@ -696,6 +703,160 @@
       "tags": {
         "resourceType": "Service Fabric",
         "clusterName": "[parameters('clusterName')]"
+      }
+    },
+    {
+      "apiVersion": "[variables('nsgApiVersion')]",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "name": "[concat(variables('subnet0Name'), '-nsg')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "SFX",
+            "properties": {
+              "access": "Allow",
+              "sourceAddressPrefix": "Internet",
+              "sourcePortRange": "*",
+              "sourcePortRanges": [],
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "19080",
+              "destinationPortRanges": [],
+              "direction": "Inbound",
+              "priority": 3900,
+              "protocol": "Tcp",
+              "description": ""
+            }
+          },
+          {
+            "name": "Client",
+            "properties": {
+              "access": "Allow",
+              "sourceAddressPrefix": "Internet",
+              "sourcePortRange": "*",
+              "sourcePortRanges": [],
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "19000",
+              "destinationPortRanges": [],
+              "direction": "Inbound",
+              "priority": 3910,
+              "protocol": "Tcp",
+              "description": ""
+            }
+          },
+          {
+            "name": "Cluster",
+            "properties": {
+              "access": "Allow",
+              "sourceAddressPrefix": "VirtualNetwork",
+              "sourcePortRange": "*",
+              "sourcePortRanges": [],
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "1025-1027",
+              "destinationPortRanges": [],
+              "direction": "Inbound",
+              "priority": 3920,
+              "protocol": "Tcp",
+              "description": ""
+            }
+          },
+          {
+            "name": "Ephemeral",
+            "properties": {
+              "access": "Allow",
+              "sourceAddressPrefix": "VirtualNetwork",
+              "sourcePortRange": "*",
+              "sourcePortRanges": [],
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "49152-65534",
+              "destinationPortRanges": [],
+              "direction": "Inbound",
+              "priority": 3930,
+              "protocol": "Tcp",
+              "description": ""
+            }
+          },
+          {
+            "name": "Application",
+            "properties": {
+              "access": "Allow",
+              "sourceAddressPrefix": "VirtualNetwork",
+              "sourcePortRange": "*",
+              "sourcePortRanges": [],
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "20000-30000",
+              "destinationPortRanges": [],
+              "direction": "Inbound",
+              "priority": 3940,
+              "protocol": "Tcp",
+              "description": ""
+            }
+          },
+          {
+            "name": "SMB",
+            "properties": {
+              "access": "Allow",
+              "sourceAddressPrefix": "VirtualNetwork",
+              "sourcePortRange": "*",
+              "sourcePortRanges": [],
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "445",
+              "destinationPortRanges": [],
+              "direction": "Inbound",
+              "priority": 3950,
+              "protocol": "Tcp",
+              "description": ""
+            }
+          },
+          {
+            "name": "Network",
+            "properties": {
+              "access": "Allow",
+              "sourceAddressPrefix": "*",
+              "sourcePortRange": "*",
+              "sourcePortRanges": [],
+              "destinationAddressPrefix": "VirtualNetwork",
+              "destinationPortRange": "*",
+              "destinationPortRanges": [],
+              "direction": "Outbound",
+              "priority": 3900,
+              "protocol": "Tcp",
+              "description": ""
+            }
+          },
+          {
+            "name": "ResourceProvider",
+            "properties": {
+              "access": "Allow",
+              "sourceAddressPrefix": "*",
+              "sourcePortRange": "*",
+              "sourcePortRanges": [],
+              "destinationAddressPrefix": "ServiceFabric",
+              "destinationPortRange": "443",
+              "destinationPortRanges": [],
+              "direction": "Outbound",
+              "priority": 3910,
+              "protocol": "Tcp",
+              "description": ""
+            }
+          },
+          {
+            "name": "Upgrade",
+            "properties": {
+              "access": "Allow",
+              "sourceAddressPrefix": "*",
+              "sourcePortRange": "*",
+              "sourcePortRanges": [],
+              "destinationAddressPrefix": "Internet",
+              "destinationPortRange": "",
+              "destinationPortRanges": ["80", "443"],
+              "direction": "Outbound",
+              "priority": 3920,
+              "protocol": "Tcp",
+              "description": ""
+            }
+          }
+        ]
       }
     }
   ],

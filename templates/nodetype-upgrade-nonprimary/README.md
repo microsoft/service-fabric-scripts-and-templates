@@ -1,8 +1,8 @@
-# Scale up a Service Fabric cluster primary node type
+# Scale up a Service Fabric cluster non-primary node type
 
 These before/after templates represent the steps of upgrading the primary node type VM size and operating system of an example cluster.
 
-The initial state of the example test cluster consists of one node type of Silver durability, backed by a single scale set with five nodes. The upgraded state of the cluster adds an additional, upgraded scale set (with VM size from Standard_D2_V2 to Standard D4_V2, and OS from Windows Server 2019 to 2022 Datacenter). Follow these commands to walkthrough the complete upgrade scenario. For a more detailed discussion of the procedure, see [Scale up a Service Fabric cluster primary node type](https://docs.microsoft.com/azure/service-fabric/service-fabric-scale-up-primary-node-type).
+The initial state of the example test cluster consists of two node types of Silver durability, backed by a single scale set with five nodes. The upgraded state of the cluster adds an additional, upgraded scale set (with VM size from Standard_D2_V2 to Standard D4_V2, and OS from Windows Server 2019 to 2022 Datacenter). Follow these commands to walkthrough the complete upgrade scenario. For a more detailed discussion of the procedure, see [Scale up a Service Fabric cluster primary node type](https://docs.microsoft.com/azure/service-fabric/service-fabric-scale-up-primary-node-type).
 
 ```powershell
 # Sign in to your Azure account
@@ -56,7 +56,7 @@ $thumb = "BB796AA33BD9767E7DA27FE5182CF8FDEE714A70"
 $sourceVaultValue = "/subscriptions/########-####-####-####-############/resourceGroups/sftestupgradegroup/providers/Microsoft.KeyVault/vaults/sftestupgradegroup"
 
 # Deploy the updated template with new scale set (upgraded to use managed disks)
-$templateFilePath = "C:\Step1-AddPrimaryNodeType.json"
+$templateFilePath = "C:\Step1-AddNonPrimaryNodeType.json"
 
 New-AzResourceGroupDeployment `
     -ResourceGroupName $resourceGroupName `
@@ -71,7 +71,7 @@ New-AzResourceGroupDeployment `
 Get-ServiceFabricClusterHealth
 
 # Disable the nodes in the original scale set.
-$nodeType = "nt0vm"
+$nodeType = "nt1vm"
 $nodes = Get-ServiceFabricNode
 
 Write-Host "Disabling nodes..."
@@ -97,32 +97,22 @@ foreach($node in $nodes)
 }
 
 # Remove the original scale set
-$scaleSetName = "nt0vm"
+$scaleSetName = "nt1vm"
 $scaleSetResourceType = "Microsoft.Compute/virtualMachineScaleSets"
 
 Remove-AzResource -ResourceName $scaleSetName -ResourceType $scaleSetResourceType -ResourceGroupName $resourceGroupName -Force
 
 # Delete the original IP and load balancer resources
-$lbName = "LB-sftestupgrade-nt0vm"
+$lbName = "LB-sftestupgrade-nt1vm"
 $lbResourceType = "Microsoft.Network/loadBalancers"
 $ipResourceType = "Microsoft.Network/publicIPAddresses"
 $oldPublicIpName = "PublicIP-LB-FE-nt0vm"
-$newPublicIpName = "PublicIP-LB-FE-nt1vm"
-
-$oldPrimaryPublicIP = Get-AzPublicIpAddress -Name $oldPublicIpName  -ResourceGroupName $resourceGroupName
-$primaryDNSName = $oldPrimaryPublicIP.DnsSettings.DomainNameLabel
-$primaryDNSFqdn = $oldPrimaryPublicIP.DnsSettings.Fqdn
 
 Remove-AzResource -ResourceName $lbName -ResourceType $lbResourceType -ResourceGroupName $resourceGroupName -Force
 Remove-AzResource -ResourceName $oldPublicIpName -ResourceType $ipResourceType -ResourceGroupName $resourceGroupName -Force
 
-$PublicIP = Get-AzPublicIpAddress -Name $newPublicIpName  -ResourceGroupName $resourceGroupName
-$PublicIP.DnsSettings.DomainNameLabel = $primaryDNSName
-$PublicIP.DnsSettings.Fqdn = $primaryDNSFqdn
-Set-AzPublicIpAddress -PublicIpAddress $PublicIP
-
 # Remove node states for the deleted scale set
-$nodeType = "nt0vm"
+$nodeType = "nt1vm"
 $nodes = Get-ServiceFabricNode
 
 Write-Host "Removing node state..."
@@ -137,7 +127,7 @@ foreach($node in $nodes)
 }
 
 # Update the template to reflect your changes and redeploy
-$templateFilePath = "C:\Step3-CleanupOriginalPrimaryNodeType"
+$templateFilePath = "C:\Step2-CleanupOriginalNonPrimaryNodeType"
 
 New-AzResourceGroupDeployment `
     -ResourceGroupName $resourceGroupName `
@@ -147,4 +137,3 @@ New-AzResourceGroupDeployment `
     -CertificateUrlValue $certUrlValue `
     -SourceVaultValue $sourceVaultValue `
     -Verbose
-
