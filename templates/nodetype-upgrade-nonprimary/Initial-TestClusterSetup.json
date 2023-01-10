@@ -1,5 +1,5 @@
 {
-  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
     "clusterLocation": {
@@ -58,6 +58,20 @@
         "description": "VM image version"
       }
     },
+    "loadBalancedAppPort1": {
+      "type": "int",
+      "defaultValue": 80,
+      "metadata": {
+        "description": "Input endpoint1 for the application to use. Replace it with what your application uses"
+      }
+    },
+    "loadBalancedAppPort2": {
+      "type": "int",
+      "defaultValue": 443,
+      "metadata": {
+        "description": "Input endpoint2 for the application to use. Replace it with what your application uses"
+      }
+    },
     "vmImagePublisher1": {
       "type": "string",
       "defaultValue": "MicrosoftWindowsServer",
@@ -84,20 +98,6 @@
       "defaultValue": "latest",
       "metadata": {
         "description": "VM image version"
-      }
-    },
-    "loadBalancedAppPort1": {
-      "type": "int",
-      "defaultValue": 80,
-      "metadata": {
-        "description": "Input endpoint1 for the application to use. Replace it with what your application uses"
-      }
-    },
-    "loadBalancedAppPort2": {
-      "type": "int",
-      "defaultValue": 443,
-      "metadata": {
-        "description": "Input endpoint2 for the application to use. Replace it with what your application uses"
       }
     },
     "clusterProtectionLevel": {
@@ -196,7 +196,7 @@
     },
     "vmNodeType1Size": {
       "type": "string",
-      "defaultValue": "Standard_D4_V2"
+      "defaultValue": "Standard_D2_V2"
     }
   },
   "variables": {
@@ -215,7 +215,7 @@
     "vNetApiVersion": "2020-07-01",
     "storageApiVersion": "2019-06-01",
     "publicIPApiVersion": "2020-07-01",
-    "nsgApiVersion": "2017-06-01", 
+    "nsgApiVersion": "2017-06-01",
     "nt0applicationStartPort": "20000",
     "nt0applicationEndPort": "30000",
     "nt0ephemeralStartPort": "49152",
@@ -284,7 +284,10 @@
       "type": "Microsoft.Network/virtualNetworks",
       "name": "[variables('virtualNetworkName')]",
       "location": "[variables('computeLocation')]",
-      "dependsOn": [],
+      "dependsOn": [
+        "[concat('Microsoft.Network/networkSecurityGroups/', concat(variables('subnet0Name'), '-nsg'))]",
+        "[concat('Microsoft.Network/networkSecurityGroups/', concat(variables('subnet1Name'), '-nsg'))]"
+      ],
       "properties": {
         "addressSpace": {
           "addressPrefixes": [
@@ -295,13 +298,19 @@
           {
             "name": "[variables('subnet0Name')]",
             "properties": {
-              "addressPrefix": "[variables('subnet0Prefix')]"
+              "addressPrefix": "[variables('subnet0Prefix')]",
+              "networkSecurityGroup": {
+                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', concat(variables('subnet0Name'), '-nsg'))]"
+              }
             }
           },
           {
             "name": "[variables('subnet1Name')]",
             "properties": {
-              "addressPrefix": "[variables('subnet1Prefix')]"
+              "addressPrefix": "[variables('subnet1Prefix')]",
+              "networkSecurityGroup": {
+                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', concat(variables('subnet1Name'), '-nsg'))]"
+              }
             }
           }
         ]
@@ -499,11 +508,14 @@
       "type": "Microsoft.Network/publicIPAddresses",
       "name": "[concat(variables('lbIPName'),'-',variables('vmNodeType1Name'))]",
       "location": "[variables('computeLocation')]",
+      "sku": {
+        "name": "Standard"
+      },
       "properties": {
         "dnsSettings": {
           "domainNameLabel": "[concat(variables('dnsName'),'-','nt1')]"
         },
-        "publicIPAllocationMethod": "Dynamic"
+        "publicIPAllocationMethod": "Static"
       },
       "tags": {
         "resourceType": "Service Fabric",
@@ -771,28 +783,28 @@
                 }
               },
               {
-                "name": "[concat('VMIaaSAntimalware_',variables('vmNodeType0Name'))]",
-                "properties": {
-                  "publisher": "Microsoft.Azure.Security",
-                  "type": "IaaSAntimalware",
-                  "typeHandlerVersion": "1.5",
-                  "settings": {
-                    "AntimalwareEnabled": "true",
-                    "Exclusions": {
-                      "Paths": "D:\\SvcFab;D:\\SvcFab\\Log;C:\\Program Files\\Microsoft Service Fabric",
-                      "Processes": "Fabric.exe;FabricHost.exe;FabricInstallerService.exe;FabricSetup.exe;FabricDeployer.exe;ImageBuilder.exe;FabricGateway.exe;FabricDCA.exe;FabricFAS.exe;FabricUOS.exe;FabricRM.exe;FileStoreService.exe"
-                    },
-                    "RealtimeProtectionEnabled": "true",
-                    "ScheduledScanSettings": {
-                      "isEnabled": "true",
-                      "scanType": "Quick",
-                      "day": "7",
-                      "time": "120"
-                    }
-                  },
-                  "protectedSettings": null
+                  "name": "[concat('VMIaaSAntimalware_',variables('vmNodeType0Name'))]",
+                  "properties": {
+                      "publisher": "Microsoft.Azure.Security",
+                      "type": "IaaSAntimalware",
+                      "typeHandlerVersion": "1.5",
+                      "settings": {
+                         "AntimalwareEnabled": "true",
+                         "Exclusions": {
+                           "Paths": "D:\\SvcFab;D:\\SvcFab\\Log;C:\\Program Files\\Microsoft Service Fabric",
+                           "Processes": "Fabric.exe;FabricHost.exe;FabricInstallerService.exe;FabricSetup.exe;FabricDeployer.exe;ImageBuilder.exe;FabricGateway.exe;FabricDCA.exe;FabricFAS.exe;FabricUOS.exe;FabricRM.exe;FileStoreService.exe"
+                         },
+                         "RealtimeProtectionEnabled": "true",
+                         "ScheduledScanSettings": {
+                           "isEnabled": "true",
+                           "scanType": "Quick",
+                           "day": "7",
+                           "time": "120"
+                         }
+                      },
+                      "protectedSettings": null
+                   }
                 }
-              }
             ]
           },
           "networkProfile": {
@@ -1134,7 +1146,7 @@
               "startPort": "[variables('nt0ephemeralStartPort')]"
             },
             "httpGatewayEndpointPort": "[variables('nt0fabricHttpGatewayPort')]",
-            "isPrimary": true,
+            "isPrimary": false,
             "reverseProxyEndpointPort": "[variables('nt0reverseProxyEndpointPort')]",
             "vmInstanceCount": "[parameters('nt1InstanceCount')]"
           }
