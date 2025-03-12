@@ -27,12 +27,28 @@ if(!(Test-Path -Path $DockerPackageOutputDirectoryPath))
     Write-Host "Created " $DockerPackageOutputDirectoryPath
 }
 
+# Remove publish folder if it exists, and remove the dockerfile
+$DockerPublishPath = Join-Path $DockerPackageOutputDirectoryPath -ChildPath "publish"
+if(Test-Path -Path $DockerPublishPath)
+{
+    Remove-Item -Path $DockerPublishPath -Recurse -Force
+    Write-Host "Removed existing publish directory."
+}
+
+$dockerfilePath = Join-Path $DockerPackageOutputDirectoryPath -ChildPath "Dockerfile"
+if(Test-Path -Path $dockerfilePath)
+{
+    Remove-Item -Path $dockerfilePath -Force
+    Write-Host "Removed existing Dockerfile."
+}
+
 $DockerPublishPath = Join-Path $DockerPackageOutputDirectoryPath -ChildPath "publish"
 if(!(Test-Path -Path $DockerPublishPath))
 {
     New-Item -ItemType directory $DockerPublishPath | Out-Null
     Write-Host "Created " $DockerPublishPath
 }
+
 
 Write-Host "Copying all files from " $CodePackageDirectoryPath " to " $DockerPublishPath
 $SourceCopyPath = Join-Path $CodePackageDirectoryPath -ChildPath "*"
@@ -41,16 +57,6 @@ Write-Host "Files successfully copied."
 
 Remove-Item $CodePackageDirectoryPath -Recurse -Force
 Write-Host "Removed " $CodePackageDirectoryPath
-
-$ServiceFabricDataInterfacesPath = Join-Path $DockerPublishPath -ChildPath "Microsoft.ServiceFabric.Data.Interfaces.dll"
-if(Test-Path -Path $ServiceFabricDataInterfacesPath)
-{
-    Remove-Item $ServiceFabricDataInterfacesPath -Force
-    Write-Host "Microsoft.ServiceFabric.Data.Interfaces.dll removed."
-}
-
-Get-ChildItem $DockerPublishPath | Where-Object{$_.Name -Match "System.Fabric.*.dll"} | Remove-Item -Force
-Write-Host "Removed System.Fabric.*.dll"
 
 $initScriptPath = Join-Path $DockerPublishPath -ChildPath "init.bat"
 
