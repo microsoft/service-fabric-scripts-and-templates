@@ -1,4 +1,4 @@
-﻿namespace StatelessContainer
+namespace StatelessContainer
 {
     using System;
     using System.IO;
@@ -17,6 +17,26 @@
         public static void Initialize()
         {
             SFCodePath = Environment.GetEnvironmentVariable(FabricCodePathEnvironmentVariableName, EnvironmentVariableTarget.Process);
+
+            if (!string.IsNullOrEmpty(SFCodePath) && Directory.Exists(SFCodePath))
+            {
+                PreloadAllAssemblies();
+            }
+        }
+
+        private static void PreloadAllAssemblies()
+        {
+            string[] dllFiles = Directory.GetFiles(SFCodePath, "*.dll", SearchOption.TopDirectoryOnly);
+            
+            foreach (string dllPath in dllFiles)
+            {
+                try
+                {
+                    string assemblyName = Path.GetFileNameWithoutExtension(dllPath);
+                    Assembly.LoadFrom(dllPath);
+                }
+                catch { }
+            }
         }
 
         private static Assembly LoadFromFabricCodePath(object sender, ResolveEventArgs args)
